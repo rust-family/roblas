@@ -15,7 +15,7 @@
 */
 //! A BLAS(Basic Linear Algebra Subprograms) library implemented in pure rust. For now this project
 //! is under development. The first available version is expected to be released at the end of 2021.
-#![no_std]
+// #![no_std]
 
 pub mod common;
 pub mod level1;
