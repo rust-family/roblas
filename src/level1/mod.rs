@@ -2,7 +2,7 @@
 //! s-function:
 //! - [x] SROTG - setup Givens rotation
 //!
-//! - [ ] SROTMG - setup modified Givens rotation
+//! - [x] SROTMG - setup modified Givens rotation
 //!
 //! - [ ] SROT - apply Givens rotation
 //!
