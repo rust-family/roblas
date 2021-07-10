@@ -81,11 +81,11 @@ pub unsafe extern fn cblas_srotg(a: *mut f32, b: *mut f32, c: *mut f32, s: *mut 
     }
 }
 
-/// SROTMG  computes  the  elements  of  a  modified  Givens plane rotation matrix.
+/// SROTMG computes the elements of a modified Givens plane rotation matrix.
 ///
 /// # Description
 /// Given Cartesian coordinates ($b_1$, $b_2$) of an input vector, the rotmg routines compute
-/// the components of a modified Givens transformation matrix H that zeros the y-component of the resulting vector:
+/// the components of a modified Givens transformation matrix $\boldsymbol{H}$ that zeros the y-component of the resulting vector:
 ///
 /// $$
 ///     \left [ \begin{matrix}
@@ -267,7 +267,7 @@ pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: 
     *params = flag;
 }
 
-/// SSWAP interchanges two vectors. Uses unrolled loops for increments equal to 1.
+/// SSWAP interchanges two vectors.
 ///
 /// # Description
 /// SSWAP  swaps two real vectors, it interchanges n values of vector x and
@@ -338,7 +338,7 @@ pub unsafe extern fn cblas_sswap(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mu
     }
 }
 
-/// SSCAL scales a vector by a constant. Uses unrolled loops for increment equal to 1.
+/// SSCAL scales a vector by a constant.
 ///
 /// # Description
 /// SSCAL scales a real vector with a real scalar.  SSCAL scales the vector
@@ -392,4 +392,119 @@ pub unsafe extern fn cblas_sscal(n: BlasInt, alpha: f32, x: *mut f32, inc_x: Bla
             *pos = alpha * (*pos);
         }
     }
+}
+
+/// SCOPY copies a vector, x, to a vector, y.
+///
+/// # Description
+/// The copy routines copy one vector to another:
+/// $$ \vec{y} \gets \vec{x} $$
+///
+/// where $\vec{x}$ and $\vec{y}$ are vectors of n elements.
+///
+/// # Arguments
+/// * `n`(in) - Number of vector elements to be copied.
+///
+/// * `x`(in) - Vector from which to copy.
+///
+/// * `inc_x`(in) - Increment between elements of x. If incx = 0, the results will be unpredictable.
+///
+/// * `y`(out) - array of dimension (n-1) * |incy| + 1, result vector.
+///
+/// * `inc_y`(in) - Increment between elements of y.  If incy = 0, the results will be unpredictable.
+///
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_scopy(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt) {
+    if n <= 0 {
+        return;
+    }
+    if inc_x == 1 && inc_y == 1 {
+        // code for increment equal to 1
+        let m = (n % 7) as usize;
+        if m != 0 {
+            for i in 0_usize..m {
+                *y.add(i) = *x.add(i);
+            }
+            if n < 7 {
+                return;
+            }
+        }
+        for i in (m..(n as usize)).step_by(7) {
+            *y.add(i) = *x.add(i);
+            *y.add(i + 1) = *x.add(i + 1);
+            *y.add(i + 2) = *x.add(i + 2);
+            *y.add(i + 3) = *x.add(i + 3);
+            *y.add(i + 4) = *x.add(i + 4);
+            *y.add(i + 5) = *x.add(i + 5);
+            *y.add(i + 6) = *x.add(i + 6);
+        }
+    } else {
+        // code for increment not equal to 1
+        let mut ix = 0_usize;
+        let mut iy = 0_usize;
+        if inc_x < 0 {
+            ix = (-inc_x * (n - 1)) as usize;
+        }
+        if inc_y < 0 {
+            iy = (-inc_y * (n - 1)) as usize;
+        }
+        for _ in 0_usize..(n as usize) {
+            *y.add(iy) = *x.add(ix);
+            ix += inc_x as usize;
+            iy += inc_y as usize;
+        }
+    }
+}
+
+/// SASUM sums the absolute values of the elements of a real vector.
+///
+/// # Description
+/// This routine performs the following vector operation:
+/// $$ result \gets \sum_{i=1}^{n} |x_i| $$
+///
+/// # Arguments
+/// * `n`(in) - Number of vector elements to be summed.
+///
+/// * `x`(in) - Array of dimension (n-1) * abs(incx) + 1. Vector that contains elements to be summed.
+///
+/// * `inc_x`(in) - Increment between elements of x. If incx = 0, the results will be unpredictable.
+///
+/// # Return values
+/// Sum of the absolute values of the elements of the vector x. If $n <= 0$, SASUM is set to 0.
+///
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_sasum(n: BlasInt, x: *mut f32, inc_x: BlasInt) -> f32 {
+    let mut sasum = 0_f32;
+    let mut tmp = 0_f32;
+    if n <= 0 || inc_x <= 0 {
+        return sasum;
+    }
+    if inc_x == 1 {
+        // code for increment equal to 1
+        let m = (n % 6) as usize;
+        if m != 0 {
+            for i in 0_usize..m {
+                tmp += (*x.add(i)).abs();
+            }
+            if n < 6 {
+                sasum = tmp;
+                return sasum;
+            }
+        }
+        for i in (m..(n as usize)).step_by(6) {
+            tmp += (*x.add(i)).abs() + (*x.add(i + 1)).abs() +
+                (*x.add(i + 2)).abs() + (*x.add(i + 3)).abs() +
+                (*x.add(i + 4)).abs() + (*x.add(i + 5)).abs()
+        }
+    } else {
+        // code for increment not equal to 1
+        let n_inc_x = (n * inc_x) as usize;
+        for i in (0_usize..n_inc_x).step_by(inc_x as usize) {
+            tmp += (*x.add(i)).abs()
+        }
+    }
+    sasum = tmp;
+    sasum
 }

@@ -12,7 +12,7 @@
 //!
 //! - [x] SSCAL - x = a*x
 //!
-//! - [ ] SCOPY - copy x into y
+//! - [x] SCOPY - copy x into y
 //!
 //! - [ ] SAXPY - y = a*x + y
 //!
@@ -22,9 +22,7 @@
 //!
 //! - [ ] SNRM2 - Euclidean norm
 //!
-//! - [ ] SCNRM2 - Euclidean norm
-//!
-//! - [ ] SASUM - sum of absolute values
+//! - [x] SASUM - sum of absolute values
 //!
 //! - [ ] ISAMAX - index of max abs value
 //!

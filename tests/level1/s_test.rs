@@ -39,10 +39,30 @@ mod s_test {
 
     #[test]
     fn sscal1() {
-        let mut v = vec![1f32, 2f32, 3f32];
+        let mut v = vec![1_f32, 2_f32, 3_f32];
         unsafe {
             cblas_sscal(v.len() as BlasInt, 2f32, v.as_mut_ptr(), 1);
         }
         assert_eq!(v, vec![2f32, 4f32, 6f32]);
+    }
+
+    #[test]
+    fn scopy1() {
+        let v1 = vec![1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32, 7_f32];
+        let mut v2 = vec![0_f32; 7];
+        unsafe {
+            cblas_scopy(7, v1.as_ptr(), 1, v2.as_mut_ptr(), 1);
+        }
+        assert_eq!(v1, v2);
+    }
+
+    #[test]
+    fn sasum1() {
+        let mut v = vec![1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32];
+        let result;
+        unsafe {
+            result = cblas_sasum(6, v.as_mut_ptr(), 1);
+        }
+        assert_eq!(result, 21_f32);
     }
 }
