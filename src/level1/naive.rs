@@ -111,7 +111,7 @@ pub unsafe extern fn cblas_srotg(a: *mut f32, b: *mut f32, c: *mut f32, s: *mut 
 ///
 /// * `b2`(in) - The y-coordinate of the input vector.
 ///
-/// * `params`(out) - Array of size 5. `params[0]` contains a switch, `flag`. The other array elements
+/// * `params`(out) - Array of size 5. `*params.add(0)` contains a switch, `flag`. The other array elements
 /// `params[1-4]` contain the components of the array `H`: $h_{11},h_{21},h_{12},h_{22}$, respectively.
 /// Depending on the values of `flag`, the components of `H` are set as follows:
 ///     * `flag = -1.0`:
@@ -137,9 +137,9 @@ pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: 
     // process variable
     let mut flag = 0_f32;
     let mut h11 = 0_f32;
-    let mut h12= 0_f32;
-    let mut h21= 0_f32;
-    let mut h22= 0_f32;
+    let mut h12 = 0_f32;
+    let mut h21 = 0_f32;
+    let mut h22 = 0_f32;
 
     if *d1 < zero {
         // zero H, D and b1
@@ -265,6 +265,196 @@ pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: 
     }
 
     *params = flag;
+}
+
+/// SROT performs rotation of points in the plane.
+///
+/// # Description
+/// SROT   applies  a  plane  rotation matrix to a real sequence of ordered pairs:
+/// $$ (x_i, y_i),i=1,\cdots,n $$
+///
+/// # Arguments
+/// * `n`(in) - Number of ordered pairs (planar points in SROT) to be  rotated.
+/// If n <= 0, this routine returns without computation.
+///
+/// * `sx`(in, out) - Array  of dimension (n-1) * |inc_x| + 1.
+/// On input, array x contains the x-coordinate of each planar point to be rotated.
+/// On output, array x contains the x-coordinate of each rotated planar point.
+///
+/// * `sy`(in, out) - Array of dimension (n-1) * |inc_y| + 1.
+/// On input, array y contains the y-coordinate of each planar point to be rotated.
+/// On output, array y contains the y-coordinate of each rotated planar point.
+///
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `inc_y`(in) - Increment between elements of y. If inc_y = 0, the results will be unpredictable.
+///
+/// * `c`(in) - Cosine of the angle of rotation.
+///
+/// * `s`(in) - Sine of the angle of rotation.
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_srot(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *mut f32, inc_y: BlasInt, c: f32, s: f32) {
+    let inc_x_us = inc_x as usize;
+    let inc_y_us = inc_y as usize;
+    if n <= 0 { return; }
+    if inc_x == 1 && inc_y == 1 {
+        for i in 0..n as usize {
+            let stemp = c * *sx.add(i) + s * *sy.add(i);
+            *sy.add(i) = c * *sy.add(i) - s * *sx.add(i);
+            *sx.add(i) = stemp;
+        }
+    } else {
+        let mut ix = 1_usize;
+        let mut iy = 1_usize;
+        if inc_x < 0 {
+            ix = ((1 - n) * inc_x + 1) as usize;
+        }
+        if inc_y < 0 {
+            iy = ((1 - n) * inc_y + 1) as usize;
+        }
+        for _ in 1..n {
+            let stemp = c * *sx.add(ix) + s * *sy.add(iy);
+            *sy.add(iy) = c * *sy.add(iy) - s * *sx.add(ix);
+            *sx.add(ix) = stemp;
+            ix += inc_x_us;
+            iy += inc_y_us;
+        }
+    }
+}
+
+
+/// SROTM - BLAS level one. Applies a modified Givens rotation.
+///
+/// # Description
+///  SROTM applies the modified Givens plane rotation constructed by SROTMG.
+///
+/// # Arguments
+/// * `n`(in) - Number of ordered pairs (planar points in SROT) to be  rotated.
+/// If n <= 0, this routine returns without computation.
+///
+/// * `sx`(in, out) - Array  of dimension (n-1) * |inc_x| + 1.
+/// On input, array x contains the x-coordinate of each planar point to be rotated.
+/// On output, array x contains the x-coordinate of each rotated planar point.
+///
+/// * `sy`(in, out) - Array of dimension (n-1) * |inc_y| + 1.
+/// On input, array y contains the y-coordinate of each planar point to be rotated.
+/// On output, array y contains the y-coordinate of each rotated planar point.
+///
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `inc_y`(in) - Increment between elements of y. If inc_y = 0, the results will be unpredictable.
+///
+/// * `param`(in) - REAL array of dimension 5. Contains rotation matrix information.
+/// The key parameter, param(0), may have one of four values: 1.0,  0.0,  -1.0,  or -2.0
+/// Depending on the values of `flag`, the components of `H` are set as follows:
+///     * `flag = -1.0`:
+///     $$\boldsymbol{H}=\left [ \begin{matrix} h_{11} & h_{12} \\\\ h_{21} & h_{22} \end{matrix} \right ]$$
+///     * `flag = 0.0`:
+///     $$\boldsymbol{H}=\left [ \begin{matrix} 1.0 & h_{12} \\\\ h_{21} & 1.0 \end{matrix} \right ]$$
+///     * `flag = 1.0`:
+///     $$\boldsymbol{H}=\left [ \begin{matrix} h_{11} & 1.0 \\\\ -1.0 & h_{22} \end{matrix} \right ]$$
+///     * `flag = -2.0`:
+///     $$\boldsymbol{H}=\left [ \begin{matrix} 1.0 & 0.0 \\\\ 0.0 & 1.0 \end{matrix} \right ]$$
+
+///
+/// $$
+///     R=\begin{bmatrix}h\[1,1]&h\[1,2]\\\\h\[2,1]&h\[2,2]\end{bmatrix}=\left\{\begin{aligned}
+///         &\begin{bmatrix}\mathrm{param}(1)&1.0\\\\-1.0&\mathrm{param}(4)\end{bmatrix}&&\mathrm{param}(0)=1.0\\\\
+///         &\begin{bmatrix}1.0&\mathrm{param}(3)\\\\\mathrm{param}(2)&1.0\end{bmatrix}&&\mathrm{param}(0)=0.0\\\\
+///         &\begin{bmatrix}\mathrm{param}(1)&\mathrm{param}(3)\\\\\mathrm{param}(2)&\mathrm{param}(4)\end{bmatrix}&&\mathrm{param}(0)=-1.0\\\\
+///         &\begin{bmatrix}1.0&0.0\\\\0.0&1.0\end{bmatrix}&&\mathrm{param}(0)=-2.0\\\\
+///     \end{aligned}\right.
+/// $$
+///
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_srotm(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *mut f32, inc_y: BlasInt, param: *const f32) {
+    // Const var
+    let zero = 0_f32;
+    let two = 2_f32;
+    // Subroutine
+    let flag = *param.add(0);
+    if n <= 0 || flag + two == zero { return; }
+    if inc_x == inc_y && inc_x > 0 {
+        let n_steps = (n * inc_x) as usize;
+        if flag < zero {
+            let sh11 = *param.add(1);
+            let sh12 = *param.add(3);
+            let sh21 = *param.add(2);
+            let sh22 = *param.add(4);
+            for i in (0..n_steps).step_by(inc_x as usize) {
+                let w = *sx.add(i);
+                let z = *sy.add(i);
+                *sx.add(i) = w * sh11 + z * sh12;
+                *sy.add(i) = w * sh21 + z * sh22;
+            }
+        }else if flag == zero {
+            let sh12 = *param.add(3);
+            let sh21 = *param.add(2);
+            for i in (0..n_steps).step_by(inc_y as usize) {
+                let w = *sx.add(i);
+                let z = *sy.add(i);
+                *sx.add(i) = w + z * sh12;
+                *sy.add(i) = w * sh21 + z;
+            }
+        }else {
+            let sh11 = *param.add(1);
+            let sh22 = *param.add(4);
+            for i in (0..n_steps).step_by(inc_x as usize) {
+                let w = *sx.add(i);
+                let z = *sy.add(i);
+                *sx.add(i) = w * sh11 + z;
+                *sy.add(i) = -w + sh22 * z;
+            }
+        }
+    } else {
+        let mut kx = 1_usize;
+        let mut ky = 1_usize;
+        if inc_x < 0 {
+            kx = (1 + (1 - n) * inc_x) as usize;
+        }
+        if inc_y < 0 {
+            ky = (1 + (1 - n) * inc_y) as usize;
+        }
+        if flag < zero {
+            let sh11 = *param.add(1);
+            let sh12 = *param.add(3);
+            let sh21 = *param.add(2);
+            let sh22 = *param.add(4);
+            for _ in 0..n {
+                let w = *sx.add(kx);
+                let z = *sy.add(ky);
+                *sx.add(kx) = w * sh11 + z * sh12;
+                *sy.add(ky) = w * sh21 + z * sh22;
+                kx += inc_x as usize;
+                ky += inc_y as usize;
+            }
+        }else if flag == zero {
+            let sh12 = *param.add(3);
+            let sh21 = *param.add(2);
+            for _ in 0..n {
+                let w = *sx.add(kx);
+                let z = *sy.add(ky);
+                *sx.add(kx) = w + z * sh12;
+                *sy.add(ky) = w * sh21 + z;
+                kx += inc_x as usize;
+                ky += inc_y as usize;
+            }
+        }else {
+            let sh11 = *param.add(1);
+            let sh22 = *param.add(4);
+            for _ in 0..n {
+                let w = *sx.add(kx);
+                let z = *sy.add(ky);
+                *sx.add(kx) = w * sh11 + z;
+                *sy.add(ky) = -w + sh22 * z;
+                kx += inc_x as usize;
+                ky += inc_y as usize;
+            }
+        }
+    }
+
 }
 
 /// SSWAP interchanges two vectors.
@@ -508,3 +698,5 @@ pub unsafe extern fn cblas_sasum(n: BlasInt, x: *mut f32, inc_x: BlasInt) -> f32
     sasum = tmp;
     sasum
 }
+
+

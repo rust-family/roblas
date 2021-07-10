@@ -4,7 +4,7 @@
 //!
 //! - [x] SROTMG - setup modified Givens rotation
 //!
-//! - [ ] SROT - apply Givens rotation
+//! - [x] SROT - apply Givens rotation
 //!
 //! - [ ] SROTM - apply modified Givens rotation
 //!
