@@ -642,13 +642,14 @@ pub unsafe extern fn cblas_scopy(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *
 /// # Description
 /// SAXPY computes a constant alpha times a vector x plus a vector y.  The
 /// result overwrites the initial values of vector y.
+/// This routine performs the following vector operation:
 ///
-///        This routine performs the following vector operation:
+/// $$
+///     y\leftarrow\alpha x + y
+/// $$
 ///
-///            $$y\leftarrow\alpha x + y$$
-///
-///        inc_x and inc_y specify the increment between two consecutive
-///        elements of respectively vector x and y.
+/// inc_x and inc_y specify the increment between two consecutive
+/// elements of respectively vector x and y.
 ///
 /// # Arguments
 /// * `n`(in) - Number of elements in each vector.
@@ -710,7 +711,9 @@ pub unsafe extern fn cblas_saxpy(n: BlasInt, sa: f32, sx: *const f32, inc_x: Bla
 /// # Description
 /// This routine performs the following vector operation:
 ///
-///     $$\mathrm{Result}=x^{\mathrm{T}}y=\sum_{i=0}^{n-1}x(i)\cdot y(i)$$
+/// $$
+///     \mathrm{Result}=x^{\mathrm{T}}y=\sum_{i=0}^{n-1}x(i)\cdot y(i)
+/// $$
 ///
 /// # Arguments
 /// * `n`(in) - Number of elements in each vector.
