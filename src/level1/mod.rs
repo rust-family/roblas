@@ -6,7 +6,7 @@
 //!
 //! - [x] SROT - apply Givens rotation
 //!
-//! - [ ] SROTM - apply modified Givens rotation
+//! - [x] SROTM - apply modified Givens rotation
 //!
 //! - [x] SSWAP - swap x and y
 //!
@@ -14,9 +14,9 @@
 //!
 //! - [x] SCOPY - copy x into y
 //!
-//! - [ ] SAXPY - y = a*x + y
+//! - [x] SAXPY - y = a*x + y
 //!
-//! - [ ] SDOT - dot product
+//! - [x] SDOT - dot product
 //!
 //! - [ ] SDSDOT - dot product with extended precision accumulation
 //!

@@ -356,17 +356,6 @@ pub unsafe extern fn cblas_srot(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *m
 ///     $$\boldsymbol{H}=\left [ \begin{matrix} h_{11} & 1.0 \\\\ -1.0 & h_{22} \end{matrix} \right ]$$
 ///     * `flag = -2.0`:
 ///     $$\boldsymbol{H}=\left [ \begin{matrix} 1.0 & 0.0 \\\\ 0.0 & 1.0 \end{matrix} \right ]$$
-
-///
-/// $$
-///     R=\begin{bmatrix}h\[1,1]&h\[1,2]\\\\h\[2,1]&h\[2,2]\end{bmatrix}=\left\{\begin{aligned}
-///         &\begin{bmatrix}\mathrm{param}(1)&1.0\\\\-1.0&\mathrm{param}(4)\end{bmatrix}&&\mathrm{param}(0)=1.0\\\\
-///         &\begin{bmatrix}1.0&\mathrm{param}(3)\\\\\mathrm{param}(2)&1.0\end{bmatrix}&&\mathrm{param}(0)=0.0\\\\
-///         &\begin{bmatrix}\mathrm{param}(1)&\mathrm{param}(3)\\\\\mathrm{param}(2)&\mathrm{param}(4)\end{bmatrix}&&\mathrm{param}(0)=-1.0\\\\
-///         &\begin{bmatrix}1.0&0.0\\\\0.0&1.0\end{bmatrix}&&\mathrm{param}(0)=-2.0\\\\
-///     \end{aligned}\right.
-/// $$
-///
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern fn cblas_srotm(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *mut f32, inc_y: BlasInt, param: *const f32) {
@@ -645,6 +634,133 @@ pub unsafe extern fn cblas_scopy(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *
             iy += inc_y as usize;
         }
     }
+}
+
+
+/// SAXPY adds a scalar multiple of a real vector to another real vector.
+///
+/// # Description
+/// SAXPY computes a constant alpha times a vector x plus a vector y.  The
+/// result overwrites the initial values of vector y.
+///
+///        This routine performs the following vector operation:
+///
+///            $$y\leftarrow\alpha x + y$$
+///
+///        inc_x and inc_y specify the increment between two consecutive
+///        elements of respectively vector x and y.
+///
+/// # Arguments
+/// * `n`(in) - Number of elements in each vector.
+///
+/// * `sa`(in) - On entry, SA specifies the scalar alpha.
+/// If alpha = 0 this routine returns without any computation.
+///
+/// * `sx`(in) - Array  of dimension $(n-1) * |inc_x| + 1$.  Contains the vector to be scaled before summation.
+///
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `sy`(in, out) - array of dimension $(n-1) * |inc_y| + 1$, result vector.
+/// Before calling the routine, y contains the vector to be summed.
+/// After the routine ends, y contains the result of the summation.
+///
+/// * `inc_y`(in) - Increment between elements of y.  If inc_y = 0, the results will be unpredictable.
+///
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_saxpy(n: BlasInt, sa: f32, sx: *const f32, inc_x: BlasInt, sy: *mut f32, inc_y: BlasInt) {
+    let zero = 0_f32;
+    if n <= 0 { return; }
+    if sa == zero { return; }
+    if inc_x == 1 && inc_y == 1 {
+        let m = n % 4;
+        if m != 0 {
+            for i in 0..m as usize {
+                *sy.add(i) += sa * *sx.add(i);
+            }
+        }
+        if n < 4 { return; }
+        let mp1 = m as usize;
+        for i in (mp1..(n as usize)).step_by(4) {
+            *sy.add(i) += sa * *sx.add(i);
+            *sy.add(i + 1) += sa * *sx.add(i + 1);
+            *sy.add(i + 2) += sa * *sx.add(i + 2);
+            *sy.add(i + 3) += sa * *sx.add(i + 3);
+        }
+    } else {
+        let mut ix = 0_usize;
+        let mut iy = 0_usize;
+        if inc_x < 0 {
+            ix = (-inc_x * (n - 1)) as usize;
+        }
+        if inc_y < 0 {
+            iy = (-inc_y * (n - 1)) as usize;
+        }
+        for _ in 0..n {
+            *sy.add(iy) += sa * *sx.add(ix);
+            ix += inc_x as usize;
+            iy += inc_y as usize;
+        }
+    }
+}
+
+
+/// SDOT computes a dot product of two real vectors (l real inner product).
+///
+/// # Description
+/// This routine performs the following vector operation:
+///
+///     $$\mathrm{Result}=x^{\mathrm{T}}y=\sum_{i=0}^{n-1}x(i)\cdot y(i)$$
+///
+/// # Arguments
+/// * `n`(in) - Number of elements in each vector.
+///
+/// * `sx`(in) - Array  of dimension $(n-1) * |inc_x| + 1$.  Array sx contains the first vector operand.
+///
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `sy`(in) - array of dimension $(n-1) * |inc_y| + 1$.  Array sy contains the second vector operand.
+///
+/// * `inc_y`(in) - Increment between elements of y.  If inc_y = 0, the results will be unpredictable.
+///
+/// # Return values
+///
+/// The result of dot product operation
+///
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_sdot(n: BlasInt, sx: *const f32, inc_x: BlasInt, sy: *const f32, inc_y: BlasInt) -> f32 {
+    let zero = 0_f32;
+    let mut stemp = 0_f32;
+    if n <= 0 { return zero; }
+    if inc_x == 1 && inc_y == 1 {
+        let m = n % 5;
+        for i in 0..m as usize {
+            stemp += *sx.add(i) * *sy.add(i);
+        }
+        if n < 5 {
+            return stemp;
+        }
+        let mp1 = m as usize;
+        for i in (mp1..(n as usize)).step_by(5) {
+            stemp += *sx.add(i) * *sy.add(i) + *sx.add(i+1) * *sy.add(i+1) + *sx.add(i+2) * *sy.add(i+2) + *sx.add(i+3) * *sy.add(i+3) + *sx.add(i+4) * *sy.add(i+4);
+        }
+    } else {
+        let mut ix = 0_usize;
+        let mut iy = 0_usize;
+        if inc_x < 0 {
+            ix = (-inc_x * (n - 1)) as usize;
+        }
+        if inc_y < 0 {
+            iy = (-inc_y * (n - 1)) as usize;
+        }
+        for _ in 0..n {
+            stemp += *sx.add(ix) * *sy.add(iy);
+            ix += inc_x as usize;
+            iy += inc_y as usize;
+        }
+    }
+    stemp
 }
 
 /// SASUM sums the absolute values of the elements of a real vector.
