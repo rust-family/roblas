@@ -10,3 +10,4 @@ edition = "2018"
 rustdoc-args = [ "--html-in-header", "doc/math-header.html" ]
 
 [dependencies]
+num-complex = "0.4"

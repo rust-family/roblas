@@ -105,4 +105,34 @@ mod s_test {
         }
         assert_eq!(result, 124_f32);
     }
+
+    #[test]
+    fn sdsdot1() {
+        let v1 = vec![1_f32, 2_f32, 3_f32, 4_f32];
+        let result;
+        unsafe {
+            result = cblas_sdsdot(4, -100_f32, v1.as_ptr(), 1, v1.as_ptr(), 1);
+        }
+        assert_eq!(result, -70_f32);
+    }
+
+    #[test]
+    fn isamax1() {
+        let v1 = vec![2_f32, 1_f32, 5_f32, 5_f32];
+        let result;
+        unsafe {
+            result = cblas_isamax(4, v1.as_ptr(), 1);
+        }
+        assert_eq!(result, 2);
+    }
+
+    #[test]
+    fn isamin1() {
+        let v1 = vec![2_f32, 1_f32, 5_f32, 5_f32];
+        let result;
+        unsafe {
+            result = cblas_isamin(4, v1.as_ptr(), 1);
+        }
+        assert_eq!(result, 1);
+    }
 }

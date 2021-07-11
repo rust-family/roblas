@@ -1,4 +1,6 @@
-//! This is a list of function.
+//! The level 1 functions of blas.
+//!
+//! This is a list of functions:
 //! s-function:
 //! - [x] SROTG - setup Givens rotation
 //!
@@ -18,15 +20,46 @@
 //!
 //! - [x] SDOT - dot product
 //!
-//! - [ ] SDSDOT - dot product with extended precision accumulation
+//! - [x] SDSDOT - dot product with extended precision accumulation
 //!
-//! - [ ] SNRM2 - Euclidean norm
+//! - [x] SNRM2 - Euclidean norm
 //!
 //! - [x] SASUM - sum of absolute values
 //!
-//! - [ ] ISAMAX - index of max abs value
+//! - [x] ISAMAX - index of max abs value
 //!
+//! - [x] ISAMIN - index of min abs value
 //!
+//! This is a list of d-functions:
+//! - [ ] DROTG - setup Givens rotation
+//!
+//! - [ ] DROTMG - setup modified Givens rotation
+//!
+//! - [ ] DROT - apply Givens rotation
+//!
+//! - [ ] DROTM - apply modified Givens rotation
+//!
+//! - [ ] DSWAP - swap x and y
+//!
+//! - [ ] DSCAL - x = a*x
+//!
+//! - [ ] DCOPY - copy x into y
+//!
+//! - [ ] DAXPY - y = a*x + y
+//!
+//! - [ ] DDOT - dot product
+//!
+//! - [ ] DSDOT - dot product with extended precision accumulation
+//!
+//! - [ ] DNRM2 - Euclidean norm
+//!
+//! - [ ] DZNRM2 - Euclidean norm
+//!
+//! - [ ] DASUM - sum of absolute values
+//!
+//! - [ ] IDAMAX - index of max abs value
+//!
+//! - [ ] IDAMIN - index of min abs value
 
 mod naive;
 pub use naive::*;

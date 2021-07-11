@@ -1,4 +1,4 @@
-use crate::common::BlasInt;
+use crate::common::{BlasInt, BlasIndex};
 
 /// SROTG construct givens plane rotation.
 ///
@@ -277,15 +277,15 @@ pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: 
 /// * `n`(in) - Number of ordered pairs (planar points in SROT) to be  rotated.
 /// If n <= 0, this routine returns without computation.
 ///
-/// * `sx`(in, out) - Array  of dimension (n-1) * |inc_x| + 1.
+/// * `x`(in, out) - Array  of dimension (n-1) * |inc_x| + 1.
 /// On input, array x contains the x-coordinate of each planar point to be rotated.
 /// On output, array x contains the x-coordinate of each rotated planar point.
 ///
-/// * `sy`(in, out) - Array of dimension (n-1) * |inc_y| + 1.
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `y`(in, out) - Array of dimension (n-1) * |inc_y| + 1.
 /// On input, array y contains the y-coordinate of each planar point to be rotated.
 /// On output, array y contains the y-coordinate of each rotated planar point.
-///
-/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
 ///
 /// * `inc_y`(in) - Increment between elements of y. If inc_y = 0, the results will be unpredictable.
 ///
@@ -294,15 +294,15 @@ pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: 
 /// * `s`(in) - Sine of the angle of rotation.
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_srot(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *mut f32, inc_y: BlasInt, c: f32, s: f32) {
+pub unsafe extern fn cblas_srot(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt, c: f32, s: f32) {
     let inc_x_us = inc_x as usize;
     let inc_y_us = inc_y as usize;
     if n <= 0 { return; }
     if inc_x == 1 && inc_y == 1 {
         for i in 0..n as usize {
-            let stemp = c * *sx.add(i) + s * *sy.add(i);
-            *sy.add(i) = c * *sy.add(i) - s * *sx.add(i);
-            *sx.add(i) = stemp;
+            let stemp = c * *x.add(i) + s * *y.add(i);
+            *y.add(i) = c * *y.add(i) - s * *x.add(i);
+            *x.add(i) = stemp;
         }
     } else {
         let mut ix = 1_usize;
@@ -314,9 +314,9 @@ pub unsafe extern fn cblas_srot(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *m
             iy = ((1 - n) * inc_y + 1) as usize;
         }
         for _ in 1..n {
-            let stemp = c * *sx.add(ix) + s * *sy.add(iy);
-            *sy.add(iy) = c * *sy.add(iy) - s * *sx.add(ix);
-            *sx.add(ix) = stemp;
+            let stemp = c * *x.add(ix) + s * *y.add(iy);
+            *y.add(iy) = c * *y.add(iy) - s * *x.add(ix);
+            *x.add(ix) = stemp;
             ix += inc_x_us;
             iy += inc_y_us;
         }
@@ -324,7 +324,7 @@ pub unsafe extern fn cblas_srot(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *m
 }
 
 
-/// SROTM - BLAS level one. Applies a modified Givens rotation.
+/// SROTM applies a modified Givens rotation.
 ///
 /// # Description
 ///  SROTM applies the modified Givens plane rotation constructed by SROTMG.
@@ -333,15 +333,15 @@ pub unsafe extern fn cblas_srot(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *m
 /// * `n`(in) - Number of ordered pairs (planar points in SROT) to be  rotated.
 /// If n <= 0, this routine returns without computation.
 ///
-/// * `sx`(in, out) - Array  of dimension (n-1) * |inc_x| + 1.
+/// * `x`(in, out) - Array  of dimension (n-1) * |inc_x| + 1.
 /// On input, array x contains the x-coordinate of each planar point to be rotated.
 /// On output, array x contains the x-coordinate of each rotated planar point.
 ///
-/// * `sy`(in, out) - Array of dimension (n-1) * |inc_y| + 1.
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `y`(in, out) - Array of dimension (n-1) * |inc_y| + 1.
 /// On input, array y contains the y-coordinate of each planar point to be rotated.
 /// On output, array y contains the y-coordinate of each rotated planar point.
-///
-/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
 ///
 /// * `inc_y`(in) - Increment between elements of y. If inc_y = 0, the results will be unpredictable.
 ///
@@ -358,7 +358,7 @@ pub unsafe extern fn cblas_srot(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *m
 ///     $$\boldsymbol{H}=\left [ \begin{matrix} 1.0 & 0.0 \\\\ 0.0 & 1.0 \end{matrix} \right ]$$
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_srotm(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *mut f32, inc_y: BlasInt, param: *const f32) {
+pub unsafe extern fn cblas_srotm(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt, param: *const f32) {
     // Const var
     let zero = 0_f32;
     let two = 2_f32;
@@ -373,28 +373,28 @@ pub unsafe extern fn cblas_srotm(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *
             let sh21 = *param.add(2);
             let sh22 = *param.add(4);
             for i in (0..n_steps).step_by(inc_x as usize) {
-                let w = *sx.add(i);
-                let z = *sy.add(i);
-                *sx.add(i) = w * sh11 + z * sh12;
-                *sy.add(i) = w * sh21 + z * sh22;
+                let w = *x.add(i);
+                let z = *y.add(i);
+                *x.add(i) = w * sh11 + z * sh12;
+                *y.add(i) = w * sh21 + z * sh22;
             }
         }else if flag == zero {
             let sh12 = *param.add(3);
             let sh21 = *param.add(2);
             for i in (0..n_steps).step_by(inc_y as usize) {
-                let w = *sx.add(i);
-                let z = *sy.add(i);
-                *sx.add(i) = w + z * sh12;
-                *sy.add(i) = w * sh21 + z;
+                let w = *x.add(i);
+                let z = *y.add(i);
+                *x.add(i) = w + z * sh12;
+                *y.add(i) = w * sh21 + z;
             }
         }else {
             let sh11 = *param.add(1);
             let sh22 = *param.add(4);
             for i in (0..n_steps).step_by(inc_x as usize) {
-                let w = *sx.add(i);
-                let z = *sy.add(i);
-                *sx.add(i) = w * sh11 + z;
-                *sy.add(i) = -w + sh22 * z;
+                let w = *x.add(i);
+                let z = *y.add(i);
+                *x.add(i) = w * sh11 + z;
+                *y.add(i) = -w + sh22 * z;
             }
         }
     } else {
@@ -412,10 +412,10 @@ pub unsafe extern fn cblas_srotm(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *
             let sh21 = *param.add(2);
             let sh22 = *param.add(4);
             for _ in 0..n {
-                let w = *sx.add(kx);
-                let z = *sy.add(ky);
-                *sx.add(kx) = w * sh11 + z * sh12;
-                *sy.add(ky) = w * sh21 + z * sh22;
+                let w = *x.add(kx);
+                let z = *y.add(ky);
+                *x.add(kx) = w * sh11 + z * sh12;
+                *y.add(ky) = w * sh21 + z * sh22;
                 kx += inc_x as usize;
                 ky += inc_y as usize;
             }
@@ -423,10 +423,10 @@ pub unsafe extern fn cblas_srotm(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *
             let sh12 = *param.add(3);
             let sh21 = *param.add(2);
             for _ in 0..n {
-                let w = *sx.add(kx);
-                let z = *sy.add(ky);
-                *sx.add(kx) = w + z * sh12;
-                *sy.add(ky) = w * sh21 + z;
+                let w = *x.add(kx);
+                let z = *y.add(ky);
+                *x.add(kx) = w + z * sh12;
+                *y.add(ky) = w * sh21 + z;
                 kx += inc_x as usize;
                 ky += inc_y as usize;
             }
@@ -434,10 +434,10 @@ pub unsafe extern fn cblas_srotm(n: BlasInt, sx: *mut f32, inc_x: BlasInt, sy: *
             let sh11 = *param.add(1);
             let sh22 = *param.add(4);
             for _ in 0..n {
-                let w = *sx.add(kx);
-                let z = *sy.add(ky);
-                *sx.add(kx) = w * sh11 + z;
-                *sy.add(ky) = -w + sh22 * z;
+                let w = *x.add(kx);
+                let z = *y.add(ky);
+                *x.add(kx) = w * sh11 + z;
+                *y.add(ky) = -w + sh22 * z;
                 kx += inc_x as usize;
                 ky += inc_y as usize;
             }
@@ -654,14 +654,14 @@ pub unsafe extern fn cblas_scopy(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *
 /// # Arguments
 /// * `n`(in) - Number of elements in each vector.
 ///
-/// * `sa`(in) - On entry, SA specifies the scalar alpha.
+/// * `a`(in) - On entry, `a` specifies the scalar alpha.
 /// If alpha = 0 this routine returns without any computation.
 ///
-/// * `sx`(in) - Array  of dimension $(n-1) * |inc_x| + 1$.  Contains the vector to be scaled before summation.
+/// * `x`(in) - Array  of dimension $(n-1) * |inc_x| + 1$.  Contains the vector to be scaled before summation.
 ///
 /// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
 ///
-/// * `sy`(in, out) - array of dimension $(n-1) * |inc_y| + 1$, result vector.
+/// * `y`(in, out) - array of dimension $(n-1) * |inc_y| + 1$, result vector.
 /// Before calling the routine, y contains the vector to be summed.
 /// After the routine ends, y contains the result of the summation.
 ///
@@ -669,24 +669,24 @@ pub unsafe extern fn cblas_scopy(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_saxpy(n: BlasInt, sa: f32, sx: *const f32, inc_x: BlasInt, sy: *mut f32, inc_y: BlasInt) {
+pub unsafe extern fn cblas_saxpy(n: BlasInt, a: f32, x: *const f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt) {
     let zero = 0_f32;
     if n <= 0 { return; }
-    if sa == zero { return; }
+    if a == zero { return; }
     if inc_x == 1 && inc_y == 1 {
         let m = n % 4;
         if m != 0 {
             for i in 0..m as usize {
-                *sy.add(i) += sa * *sx.add(i);
+                *y.add(i) += a * *x.add(i);
             }
         }
         if n < 4 { return; }
         let mp1 = m as usize;
         for i in (mp1..(n as usize)).step_by(4) {
-            *sy.add(i) += sa * *sx.add(i);
-            *sy.add(i + 1) += sa * *sx.add(i + 1);
-            *sy.add(i + 2) += sa * *sx.add(i + 2);
-            *sy.add(i + 3) += sa * *sx.add(i + 3);
+            *y.add(i) += a * *x.add(i);
+            *y.add(i + 1) += a * *x.add(i + 1);
+            *y.add(i + 2) += a * *x.add(i + 2);
+            *y.add(i + 3) += a * *x.add(i + 3);
         }
     } else {
         let mut ix = 0_usize;
@@ -698,13 +698,12 @@ pub unsafe extern fn cblas_saxpy(n: BlasInt, sa: f32, sx: *const f32, inc_x: Bla
             iy = (-inc_y * (n - 1)) as usize;
         }
         for _ in 0..n {
-            *sy.add(iy) += sa * *sx.add(ix);
+            *y.add(iy) += a * *x.add(ix);
             ix += inc_x as usize;
             iy += inc_y as usize;
         }
     }
 }
-
 
 /// SDOT computes a dot product of two real vectors (l real inner product).
 ///
@@ -718,11 +717,11 @@ pub unsafe extern fn cblas_saxpy(n: BlasInt, sa: f32, sx: *const f32, inc_x: Bla
 /// # Arguments
 /// * `n`(in) - Number of elements in each vector.
 ///
-/// * `sx`(in) - Array  of dimension $(n-1) * |inc_x| + 1$.  Array sx contains the first vector operand.
+/// * `x`(in) - Array  of dimension $(n-1) * |inc_x| + 1$.  Array x contains the first vector operand.
 ///
 /// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
 ///
-/// * `sy`(in) - array of dimension $(n-1) * |inc_y| + 1$.  Array sy contains the second vector operand.
+/// * `y`(in) - array of dimension $(n-1) * |inc_y| + 1$.  Array y contains the second vector operand.
 ///
 /// * `inc_y`(in) - Increment between elements of y.  If inc_y = 0, the results will be unpredictable.
 ///
@@ -732,21 +731,21 @@ pub unsafe extern fn cblas_saxpy(n: BlasInt, sa: f32, sx: *const f32, inc_x: Bla
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_sdot(n: BlasInt, sx: *const f32, inc_x: BlasInt, sy: *const f32, inc_y: BlasInt) -> f32 {
+pub unsafe extern fn cblas_sdot(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *const f32, inc_y: BlasInt) -> f32 {
     let zero = 0_f32;
     let mut stemp = 0_f32;
     if n <= 0 { return zero; }
     if inc_x == 1 && inc_y == 1 {
         let m = n % 5;
         for i in 0..m as usize {
-            stemp += *sx.add(i) * *sy.add(i);
+            stemp += *x.add(i) * *y.add(i);
         }
         if n < 5 {
             return stemp;
         }
         let mp1 = m as usize;
         for i in (mp1..(n as usize)).step_by(5) {
-            stemp += *sx.add(i) * *sy.add(i) + *sx.add(i+1) * *sy.add(i+1) + *sx.add(i+2) * *sy.add(i+2) + *sx.add(i+3) * *sy.add(i+3) + *sx.add(i+4) * *sy.add(i+4);
+            stemp += *x.add(i) * *y.add(i) + *x.add(i+1) * *y.add(i+1) + *x.add(i+2) * *y.add(i+2) + *x.add(i+3) * *y.add(i+3) + *x.add(i+4) * *y.add(i+4);
         }
     } else {
         let mut ix = 0_usize;
@@ -758,12 +757,82 @@ pub unsafe extern fn cblas_sdot(n: BlasInt, sx: *const f32, inc_x: BlasInt, sy: 
             iy = (-inc_y * (n - 1)) as usize;
         }
         for _ in 0..n {
-            stemp += *sx.add(ix) * *sy.add(iy);
+            stemp += *x.add(ix) * *y.add(iy);
             ix += inc_x as usize;
             iy += inc_y as usize;
         }
     }
     stemp
+}
+
+/// SDSDOT computes a dot product (inner product) of two real vectors in double precision.
+///
+/// # Description
+/// SDSDOT computes a dot product of two real vectors with the result accumulated in double precision.
+/// This routine performs the following vector operation:
+///
+/// $$
+///     \mathrm{result}=sb + x^{\mathrm{T}}y = sb + \sum_{i=0}^{n-1}x(i)\cdot y(i)
+/// $$
+///
+/// where x and y are real vectors and sb is a real scalar.
+///
+/// If n <= 0, SDSDOT is set to sb.
+///
+/// # Arguments
+/// * `n`(in) - Number of elements in each vector.
+///
+/// * `sb`(in) - Scalar to be added to inner product.
+///
+/// * `x`(in) - Array  of dimension $(n-1) * |inc_x| + 1$.  Array x contains the first vector operand.
+///
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `y`(in) - array of dimension $(n-1) * |inc_y| + 1$.  Array y contains the second vector operand.
+///
+/// * `inc_y`(in) - Increment between elements of y.  If inc_y = 0, the results will be unpredictable.
+///
+/// # Return values
+///
+/// The result of dot product operation with bias `sb`.
+///
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_sdsdot(n: BlasInt, sb: f32, x: *const f32, inc_x: BlasInt, y: *const f32, inc_y: BlasInt) -> f32 {
+    let mut stemp: f64 = sb as f64;
+    if n <= 0 { return sb; }
+    if inc_x == 1 && inc_y == 1 {
+        let m = n % 5;
+        for i in 0..m as usize {
+            stemp += *x.add(i) as f64 * *y.add(i) as f64;
+        }
+        if n < 5 {
+            return stemp as f32;
+        }
+        let mp1 = m as usize;
+        for i in (mp1..(n as usize)).step_by(5) {
+            stemp += *x.add(i) as f64 * *y.add(i) as f64 +
+                *x.add(i+1) as f64 * *y.add(i+1) as f64 +
+                *x.add(i+2) as f64 * *y.add(i+2) as f64 +
+                *x.add(i+3) as f64 * *y.add(i+3) as f64 +
+                *x.add(i+4) as f64 * *y.add(i+4) as f64;
+        }
+    } else {
+        let mut ix = 0_usize;
+        let mut iy = 0_usize;
+        if inc_x < 0 {
+            ix = (-inc_x * (n - 1)) as usize;
+        }
+        if inc_y < 0 {
+            iy = (-inc_y * (n - 1)) as usize;
+        }
+        for _ in 0..n {
+            stemp += *x.add(ix) as f64 * *y.add(iy) as f64;
+            ix += inc_x as usize;
+            iy += inc_y as usize;
+        }
+    }
+    stemp as f32
 }
 
 /// SASUM sums the absolute values of the elements of a real vector.
@@ -784,7 +853,7 @@ pub unsafe extern fn cblas_sdot(n: BlasInt, sx: *const f32, inc_x: BlasInt, sy: 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_sasum(n: BlasInt, x: *mut f32, inc_x: BlasInt) -> f32 {
+pub unsafe extern fn cblas_sasum(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f32 {
     let mut sasum = 0_f32;
     let mut tmp = 0_f32;
     if n <= 0 || inc_x <= 0 {
@@ -818,4 +887,165 @@ pub unsafe extern fn cblas_sasum(n: BlasInt, x: *mut f32, inc_x: BlasInt) -> f32
     sasum
 }
 
+/// SNRM2 computes the Euclidean norm of a vector.
+///
+/// # Description
+/// SNRM2 computes the Euclidean (L2) norm of a real vector, as follows:
+/// $$ \mathrm{result} = \lVert x \rVert_2 $$
+///
+/// where x is a real vector.
+///
+/// # Arguments
+/// * `n`(in) - Number of elements in the operand vector.
+///
+/// * `x`(in) - Array of dimension (n-1) * |inc_x| + 1. Array x contains the operand vector.
+///
+/// * `inc_x`(in) - Increment between elements of x. If incx = 0, the results will be unpredictable.
+///
+/// # Return values
+/// Euclidean norm. If n <= 0, SNRM2 is set to 0.0.
+///
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_snrm2(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f32 {
+    let one = 1_f32;
+    let zero = 0_f32;
+    if n < 1 || inc_x < 1 {
+        zero
+    } else if n == 1 {
+        (*x).abs()
+    } else {
+        let mut scale = zero;
+        let mut ssq = one;
+        for ix in (0_usize..(n * inc_x) as usize).step_by(inc_x as usize) {
+            if *x.add(ix) != zero {
+                let abs_xi = (*x.add(ix)).abs();
+                if scale < abs_xi {
+                    ssq = one + ssq * (scale / abs_xi).powi(2);
+                    scale = abs_xi;
+                } else {
+                    ssq += (abs_xi / scale).powi(2);
+                }
+            }
+        }
+        scale * ssq.sqrt()
+    }
+}
 
+/// ISAMAX finds the index of the element with the largest absolute value in a vector.
+///
+/// # Description
+/// ISAMAX searches a real vector for the first occurrence of the the maximum absolute value.
+/// The vector x has length n and increment inc_x.
+///
+/// ISAMAX returns the first index i such that
+/// $|x|_i = \max{|x|_j}:~j=0,\dots,n-1$
+///
+/// where $x_j$ is an element of a real vector.
+///
+/// # Arguments
+/// * `n`(in) - Number of elements to process in the vector to be searched.
+/// If n <= 0, these routines return 0.
+///
+/// * `x`(in) - Array of dimension (n-1) * |inc_x| + 1. Array x contains the vector to be searched.
+///
+/// * `inc_x`(in) - Increment between elements of x. If x <= 0, return 0.
+///
+/// # Return values
+/// Return the first index of the maximum absolute value of vector x.
+/// The vector x has length n and increment inc_x.
+///
+/// # Notes
+/// The returned index start from 0.
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_isamax(n: BlasInt, x: *const f32, inc_x: BlasInt) -> BlasIndex {
+    if n < 1 || inc_x <= 0 {
+        0
+    } else if n == 1 {
+        0
+    } else if inc_x == 1 {
+        // code for increment equal to 1
+        let mut iamax = 0;
+        let mut smax = (*x).abs();
+        for i in 1_usize..n as usize {
+            let tmp = (*x.add(i)).abs();
+            if tmp > smax {
+                iamax = i;
+                smax = tmp;
+            }
+        }
+        iamax
+    } else {
+        // code for increment not equal to 1
+        let mut iamax = 0;
+        let mut smax = (*x).abs();
+        for i in ((inc_x as usize)..((n * inc_x) as usize)).step_by(inc_x as usize) {
+            let tmp = (*x.add(i)).abs();
+            if tmp > smax {
+                iamax = i;
+                smax = tmp;
+            }
+        }
+        iamax
+    }
+}
+
+/// ISAMIN finds the index of the element with the smallest absolute value in a vector.
+///
+/// # Description
+/// ISAMIN  searches a real vector for the first occurrence of the the minimum absolute value.
+/// The vector x has length n and increment inc_x.
+///
+/// ISAMAX returns the first index i such that
+/// $|x|_i = \min{|x|_j}:~j=0,\dots,n-1$
+///
+/// where $x_j$ is an element of a real vector.
+///
+/// # Arguments
+/// * `n`(in) - Number of elements to process in the vector to be searched.
+/// If n <= 0, these routines return 0.
+///
+/// * `x`(in) - Array of dimension (n-1) * |inc_x| + 1. Array x contains the vector to be searched.
+///
+/// * `inc_x`(in) - Increment between elements of x. If x <= 0, return 0.
+///
+/// # Return values
+/// Return the first index of the minimum absolute value of vector x.
+/// The vector x has length n and increment inc_x.
+///
+/// # Notes
+/// The returned index start from 0.
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_isamin(n: BlasInt, x: *const f32, inc_x: BlasInt) -> BlasIndex {
+    if n < 1 || inc_x <= 0 {
+        0
+    } else if n == 1 {
+        0
+    } else if inc_x == 1 {
+        // code for increment equal to 1
+        let mut iamin = 0;
+        let mut smin = (*x).abs();
+        for i in 1_usize..n as usize {
+            let tmp = (*x.add(i)).abs();
+            if tmp < smin {
+                iamin = i;
+                smin = tmp;
+            }
+        }
+        iamin
+    } else {
+        // code for increment not equal to 1
+        let mut iamin = 0;
+        let mut smin = (*x).abs();
+        for i in ((inc_x as usize)..((n * inc_x) as usize)).step_by(inc_x as usize) {
+            let tmp = (*x.add(i)).abs();
+            if tmp < smin {
+                iamin = i;
+                smin = tmp;
+            }
+        }
+        iamin
+    }
+}
