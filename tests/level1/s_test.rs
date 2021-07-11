@@ -57,6 +57,26 @@ mod s_test {
     }
 
     #[test]
+    fn snrm1() {
+        let v1 = vec![-3_f32, 4_f32];
+        let result;
+        unsafe {
+            result = cblas_snrm2(2, v1.as_ptr(), 1);
+        }
+        assert_eq!(result, 5_f32);
+    }
+
+    #[test]
+    fn snrm2() {
+        let v1 = vec![-5_f32, 5_f32, 12_f32];
+        let result;
+        unsafe {
+            result = cblas_snrm2(2, v1.as_ptr(), 2);
+        }
+        assert_eq!(result, 13_f32);
+    }
+
+    #[test]
     fn sasum1() {
         let mut v = vec![1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 6_f32];
         let result;
