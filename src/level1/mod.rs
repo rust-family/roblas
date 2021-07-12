@@ -31,9 +31,9 @@
 //! - [x] ISAMIN - index of min abs value
 //!
 //! This is a list of d-functions:
-//! - [ ] DROTG - setup Givens rotation
+//! - [x] DROTG - setup Givens rotation
 //!
-//! - [ ] DROTMG - setup modified Givens rotation
+//! - [x] DROTMG - setup modified Givens rotation
 //!
 //! - [ ] DROT - apply Givens rotation
 //!
@@ -60,6 +60,31 @@
 //! - [ ] IDAMAX - index of max abs value
 //!
 //! - [ ] IDAMIN - index of min abs value
+//!
+//! This is a list of c-functions:
+//! - [ ] CROTG - setup Givens rotation
+//! 
+//! - [ ] CSROT - apply Givens rotation
+//! 
+//! - [x] CSWAP - swap x and y
+//! 
+//! - [x] CSCAL - x = a*x
+//! 
+//! - [ ] CSSCAL - x = a*x
+//! 
+//! - [ ] CCOPY - copy x into y
+//! 
+//! - [ ] CAXPY - y = a*x + y
+//! 
+//! - [ ] CDOTU - dot product
+//! 
+//! - [ ] CDOTC - dot product, conjugating the first vector
+//! 
+//! - [ ] SCASUM - sum of absolute values
+//! 
+//! - [ ] ICAMAX - index of max abs value
+//!
+//! - [ ] ICAMIN - index of min abs value
 
 mod naive;
 pub use naive::*;
