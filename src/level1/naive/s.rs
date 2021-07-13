@@ -105,7 +105,7 @@ pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: 
 /// SROT performs rotation of points in the plane.
 ///
 /// # Description
-/// SROT   applies  a  plane  rotation matrix to a real sequence of ordered pairs:
+/// SROT  applies a plane rotation matrix to a real sequence of ordered pairs:
 /// $$ (x_i, y_i),i=1,\cdots,n $$
 ///
 /// # Arguments
@@ -127,6 +127,7 @@ pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: 
 /// * `c`(in) - Cosine of the angle of rotation.
 ///
 /// * `s`(in) - Sine of the angle of rotation.
+///
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern fn cblas_srot(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt, c: f32, s: f32) {
@@ -136,7 +137,7 @@ pub unsafe extern fn cblas_srot(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut
 /// SROTM applies a modified Givens rotation.
 ///
 /// # Description
-///  SROTM applies the modified Givens plane rotation constructed by SROTMG.
+/// SROTM applies the modified Givens plane rotation constructed by SROTMG.
 ///
 /// # Arguments
 /// * `n`(in) - Number of ordered pairs (planar points in SROT) to be  rotated.
@@ -165,6 +166,7 @@ pub unsafe extern fn cblas_srot(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut
 ///     $$\boldsymbol{H}=\left [ \begin{matrix} h_{11} & 1.0 \\\\ -1.0 & h_{22} \end{matrix} \right ]$$
 ///     * `flag = -2.0`:
 ///     $$\boldsymbol{H}=\left [ \begin{matrix} 1.0 & 0.0 \\\\ 0.0 & 1.0 \end{matrix} \right ]$$
+///
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern fn cblas_srotm(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt, param: *const f32) {
@@ -175,7 +177,7 @@ pub unsafe extern fn cblas_srotm(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mu
 ///
 /// # Description
 /// SSWAP  swaps two real vectors, it interchanges n values of vector x and
-/// vector y.  incx and incy specify the increment between two consecutive
+/// vector y.  inc_x and inc_y specify the increment between two consecutive
 /// elements of respectively vector x and y.
 ///
 /// This routine performs the following vector operation:
@@ -187,13 +189,13 @@ pub unsafe extern fn cblas_srotm(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mu
 /// # Arguments
 /// * `n`(in) - Number of vector elements to be swapped. If n <= 0, this routine returns without computation.
 ///
-/// * `x`(in, out) - Array of dimension $(n-1) * |incx| + 1$.
+/// * `x`(in, out) - Array of dimension $(n-1) * |inc_x| + 1$.
 ///
-/// * `inc_x`(in) - Increment between elements of x. If $incx = 0$, the results will be unpredictable.
+/// * `inc_x`(in) - Increment between elements of x. If $inc_x = 0$, the results will be unpredictable.
 ///
-/// * `y`(in, out) - Array of dimension $(n-1) * |incy| + 1$.
+/// * `y`(in, out) - Array of dimension $(n-1) * |inc_y| + 1$.
 ///
-/// * `inc_y`(in) - Increment between elements of y. If $incy = 0$, the results will be unpredictable.
+/// * `inc_y`(in) - Increment between elements of y. If $inc_y = 0$, the results will be unpredictable.
 ///
 #[no_mangle]
 #[inline(always)]
@@ -205,7 +207,7 @@ pub unsafe extern fn cblas_sswap(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mu
 ///
 /// # Description
 /// SSCAL scales a real vector with a real scalar.  SSCAL scales the vector
-/// x of length n and increment incx by the constant $\alpha$.
+/// x of length n and increment inc_x by the constant $\alpha$.
 ///
 /// Ths routine performs the following vector operation:
 ///
@@ -240,11 +242,11 @@ pub unsafe extern fn cblas_sscal(n: BlasInt, alpha: f32, x: *mut f32, inc_x: Bla
 ///
 /// * `x`(in) - Vector from which to copy.
 ///
-/// * `inc_x`(in) - Increment between elements of x. If incx = 0, the results will be unpredictable.
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
 ///
-/// * `y`(out) - array of dimension (n-1) * |incy| + 1, result vector.
+/// * `y`(out) - array of dimension (n-1) * |inc_y| + 1, result vector.
 ///
-/// * `inc_y`(in) - Increment between elements of y.  If incy = 0, the results will be unpredictable.
+/// * `inc_y`(in) - Increment between elements of y.  If inc_y = 0, the results will be unpredictable.
 ///
 #[no_mangle]
 #[inline(always)]
@@ -286,7 +288,7 @@ pub unsafe extern fn cblas_scopy(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern fn cblas_saxpy(n: BlasInt, a: f32, x: *const f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt) {
-    common::sd_axpy(n, a, x, inc_x, y, inc_y);
+    common::a_axpy(n, a, x, inc_x, y, inc_y);
 }
 
 /// SDOT computes a dot product of two real vectors (l real inner product).
@@ -398,9 +400,9 @@ pub unsafe extern fn cblas_sdsdot(n: BlasInt, sb: f32, x: *const f32, inc_x: Bla
 /// # Arguments
 /// * `n`(in) - Number of vector elements to be summed.
 ///
-/// * `x`(in) - Array of dimension (n-1) * abs(incx) + 1. Vector that contains elements to be summed.
+/// * `x`(in) - Array of dimension (n-1) * abs(inc_x) + 1. Vector that contains elements to be summed.
 ///
-/// * `inc_x`(in) - Increment between elements of x. If incx = 0, the results will be unpredictable.
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
 ///
 /// # Return values
 /// Sum of the absolute values of the elements of the vector x. If $n <= 0$, SASUM is set to 0.
@@ -424,7 +426,7 @@ pub unsafe extern fn cblas_sasum(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f
 ///
 /// * `x`(in) - Array of dimension (n-1) * |inc_x| + 1. Array x contains the operand vector.
 ///
-/// * `inc_x`(in) - Increment between elements of x. If incx = 0, the results will be unpredictable.
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
 ///
 /// # Return values
 /// Euclidean norm. If n <= 0, SNRM2 is set to 0.0.
@@ -491,6 +493,7 @@ pub unsafe extern fn cblas_isamax(n: BlasInt, x: *const f32, inc_x: BlasInt) -> 
 ///
 /// # Notes
 /// The returned index start from 0.
+///
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern fn cblas_isamin(n: BlasInt, x: *const f32, inc_x: BlasInt) -> BlasIndex {

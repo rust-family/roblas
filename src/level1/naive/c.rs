@@ -1,5 +1,4 @@
-use crate::common::BlasInt;
-use num_complex::{Complex32, Complex};
+use crate::common::{BlasInt, Complex32};
 use super::common;
 
 /// CSWAP interchanges two complex vectors.

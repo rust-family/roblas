@@ -1,7 +1,6 @@
 use crate::common::{BlasInt, BlasIndex};
-use std::ops::{Mul, AddAssign, Add, Div, MulAssign, DivAssign};
+use std::ops::{Mul, AddAssign, Add, MulAssign, DivAssign};
 use num_traits::{Signed, Float, FromPrimitive};
-use num_traits::real::Real;
 
 #[inline(always)]
 pub unsafe fn sd_rotg<T>(a: *mut T, b: *mut T, c: *mut T, s: *mut T)
@@ -478,7 +477,7 @@ pub unsafe fn a_copy<T>(n: BlasInt, x: *const T, inc_x: BlasInt, y: *mut T, inc_
 }
 
 #[inline(always)]
-pub unsafe fn sd_axpy<T>(n: BlasInt, a: T, x: *const T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt)
+pub unsafe fn a_axpy<T>(n: BlasInt, a: T, x: *const T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt)
     where T: Copy + From<i8> + PartialEq + Mul<Output = T> + AddAssign
 {
     let zero = T::from(0);
