@@ -206,7 +206,7 @@ pub unsafe extern fn cblas_sswap(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mu
 /// SSCAL scales a vector by a constant.
 ///
 /// # Description
-/// SSCAL scales a real vector with a real scalar.  SSCAL scales the vector
+/// SSCAL scales a real vector with a real scalar. SSCAL scales the vector
 /// x of length n and increment inc_x by the constant $\alpha$.
 ///
 /// Ths routine performs the following vector operation:

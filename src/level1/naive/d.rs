@@ -207,7 +207,7 @@ pub unsafe extern fn cblas_dswap(n: BlasInt, x: *mut f64, inc_x: BlasInt, y: *mu
 /// DSCAL scales a vector by a constant.
 ///
 /// # Description
-/// DSCAL scales a double precision vector with a double precision scalar.  DSCAL scales the vector
+/// DSCAL scales a double precision vector with a double precision scalar. DSCAL scales the vector
 /// x of length n and increment inc_x by the constant $\alpha$.
 ///
 /// Ths routine performs the following vector operation:

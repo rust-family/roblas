@@ -35,31 +35,31 @@
 //!
 //! - [x] DROTMG - setup modified Givens rotation
 //!
-//! - [ ] DROT - apply Givens rotation
+//! - [x] DROT - apply Givens rotation
 //!
-//! - [ ] DROTM - apply modified Givens rotation
+//! - [x] DROTM - apply modified Givens rotation
 //!
-//! - [ ] DSWAP - swap x and y
+//! - [x] DSWAP - swap x and y
 //!
-//! - [ ] DSCAL - x = a*x
+//! - [x] DSCAL - x = a*x
 //!
-//! - [ ] DCOPY - copy x into y
+//! - [x] DCOPY - copy x into y
 //!
-//! - [ ] DAXPY - y = a*x + y
+//! - [x] DAXPY - y = a*x + y
 //!
-//! - [ ] DDOT - dot product
+//! - [x] DDOT - dot product
 //!
-//! - [ ] DSDOT - dot product with extended precision accumulation
+//! - [x] DSDOT - dot product with extended precision accumulation
 //!
-//! - [ ] DNRM2 - Euclidean norm
+//! - [x] DNRM2 - Euclidean norm
 //!
-//! - [ ] DZNRM2 - Euclidean norm
+//! - [x] DZNRM2 - Euclidean norm
 //!
-//! - [ ] DASUM - sum of absolute values
+//! - [x] DASUM - sum of absolute values
 //!
-//! - [ ] IDAMAX - index of max abs value
+//! - [x] IDAMAX - index of max abs value
 //!
-//! - [ ] IDAMIN - index of min abs value
+//! - [x] IDAMIN - index of min abs value
 //!
 //! This is a list of c-functions:
 //! - [ ] CROTG - setup Givens rotation
@@ -70,9 +70,9 @@
 //! 
 //! - [x] CSCAL - x = a*x
 //! 
-//! - [ ] CSSCAL - x = a*x
+//! - [x] CSSCAL - x = a*x
 //! 
-//! - [ ] CCOPY - copy x into y
+//! - [x] CCOPY - copy x into y
 //! 
 //! - [ ] CAXPY - y = a*x + y
 //! 

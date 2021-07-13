@@ -1,6 +1,10 @@
-use crate::common::{BlasInt, BlasIndex};
+use crate::common::{BlasInt, BlasIndex, Complex};
 use std::ops::{Mul, AddAssign, Add, MulAssign, DivAssign};
 use num_traits::{Signed, Float, FromPrimitive};
+
+// prefix 'sd' is for s-functions and d-functions
+// prefix 'cz' is for c-functions and z-functions
+// prefix 'a' is compatible with all kinds of functions
 
 #[inline(always)]
 pub unsafe fn sd_rotg<T>(a: *mut T, b: *mut T, c: *mut T, s: *mut T)
@@ -427,6 +431,43 @@ pub unsafe fn cz_scal<T>(n: BlasInt, p_alpha: *const T, x: *mut T, inc_x: BlasIn
         for i in (0..n_inc_x).step_by(inc_x as usize) {
             let pos = x.add(i);
             *pos = alpha * (*pos);
+        }
+    }
+}
+
+#[inline(always)]
+pub unsafe fn cz_sscal<T>(n: BlasInt, alpha: T, x: *mut Complex<T>, inc_x: BlasInt)
+    where T: Float
+{
+    if n < 0 || inc_x < 0 {
+        return;
+    }
+    if inc_x == 1 {
+        // optimized code for increment equal to 1
+        let m = (n % 5) as usize;
+        if m != 0 {
+            for i in 0_usize..m {
+                let pos = x.add(i);
+                *pos = (*pos) * alpha;
+            }
+            if n < 5 {
+                return;
+            }
+        }
+        for i in (m..(n as usize)).step_by(5) {
+            let pos = x.add(i);
+            *pos = (*pos) * alpha;
+            *pos.add(1) = (*pos.add(1)) * alpha;
+            *pos.add(2) = (*pos.add(2)) * alpha;
+            *pos.add(3) = (*pos.add(3)) * alpha;
+            *pos.add(4) = (*pos.add(4)) * alpha;
+        }
+    } else {
+        // normal code for increment not equal to 1
+        let n_inc_x = (n * inc_x) as usize;
+        for i in (0..n_inc_x).step_by(inc_x as usize) {
+            let pos = x.add(i);
+            *pos = (*pos) * alpha;
         }
     }
 }
