@@ -1,6 +1,102 @@
 use crate::common::{BlasInt, Complex32};
 use super::common;
 
+/// CROTG construct givens plane rotation.
+///
+/// # Description
+///
+/// CROTG computes the elements of a rotation matrix such that:
+///
+/// $$
+///     \left [  \begin{matrix}
+///         c & s \\\\
+///         -\bar{s} & c
+///     \end{matrix} \right ] *
+///     \left [ \begin{matrix}
+///         a \\\\
+///         b
+///     \end{matrix} \right ] =
+///     \left [ \begin{matrix}
+///         r \\\\
+///         0
+///     \end{matrix} \right ]
+/// $$
+///
+/// where $r=\frac{a}{\sqrt{\bar{a} * a}} * \sqrt{\bar{a} * a + \bar{b} * b}$ and the notation $\bar{z}$
+/// represents the complex conjugate of z.
+///
+/// The Givens plane rotation can be used to introduce zero elements into
+/// a matrix selectively.
+///
+/// # Arguments
+///
+/// `a`(in, out) - First  vector  component.  On input, the first component of the vector to be rotated.
+/// On output, a is overwritten by the unique complex number r, whose size in the complex plane is the
+/// Euclidean norm of the complex vector (a, b), and whose direction in the complex plane is the same
+/// as that of the original complex element a.
+///
+/// if $|a| \ne 0$, then $r= \frac{a}{|a|} * \sqrt{\bar{a} * a + \bar{b} * b}$.
+///
+/// if $|a| = 0$, then $r = b$.
+///
+/// `b`(in) - Second vector component. The second component of the vector to be rotated.
+///
+/// `c`(out) - Cosine of the angle of rotation:
+///
+/// if $|a| \ne 0$, then $c= \frac{|a|}{\sqrt{\bar{a} * a + \bar{b} * b}}$.
+///
+/// if $|a| = 0$, then $c = 0$.
+///
+/// `s`(out) - Sine of the angle of rotation:
+///
+/// if $|a| \ne 0$, then $c= \frac{a}{|a|} * \frac{\bar{b}}{\sqrt{\bar{a} * a + \bar{b} * b}}$.
+///
+/// if $|a| = 0$, then $s=(1.0,0.0)$.
+///
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_crotg(a: *mut Complex32, b: *mut Complex32, c: *mut f32, s: *mut Complex32) {
+    common::cz_rotg(a, b, c, s);
+}
+
+/// CSROT performs rotation of points in the plane.
+///
+/// # Description
+/// CSROT applies a plane rotation, where the cos and sin (C and S) is real and the vectors X and Y are complex.
+///
+/// # Arguments
+/// * `n`(in) - The number of elements in the vectors X and Y.
+///
+/// * `x`(in, out) - Array  of dimension (n-1) * |inc_x| + 1.
+/// On input, the vector X.
+/// On output, X is overwritten with C\*X + S\*Y
+///
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `y`(in, out) - Array of dimension (n-1) * |inc_y| + 1.
+/// On input, the vector Y.
+/// On output, Y is overwritten with -S\*X + C\*Y
+///
+/// * `inc_y`(in) - Increment between elements of y. If inc_y = 0, the results will be unpredictable.
+///
+/// * `c`(in) - Cosine of the angle of rotation.
+///
+/// * `s`(in) - Sine of the angle of rotation.
+/// C and S define a rotation:
+/// $$
+///     \left [ \begin{matrix}
+///         c & s \\\\
+///         -s & c
+///     \end{matrix} \right ]
+/// $$
+/// where C\*C + S\*S = 1.0.
+///
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_csrot(n: BlasInt, x: *mut Complex32, inc_x: BlasInt, y: *mut Complex32, inc_y: BlasInt, c: f32, s: f32) {
+    common::cz_srot(n, x, inc_x, y, inc_y, c, s);
+}
+
 /// CSWAP interchanges two complex vectors.
 ///
 /// # Description

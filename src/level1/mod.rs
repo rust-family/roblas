@@ -62,9 +62,9 @@
 //! - [x] IDAMIN - index of min abs value
 //!
 //! This is a list of c-functions:
-//! - [ ] CROTG - setup Givens rotation
+//! - [x] CROTG - setup Givens rotation
 //! 
-//! - [ ] CSROT - apply Givens rotation
+//! - [x] CSROT - apply Givens rotation
 //! 
 //! - [x] CSWAP - swap x and y
 //! 

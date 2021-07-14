@@ -30,7 +30,7 @@ use super::common;
 /// # Arguments
 ///
 /// `a`(in, out) - First  vector  component.  On input, the first component of the vector to be rotated.
-/// On output, a is overwritten by r, the first  component of the vector in the rotated coordinate system where:
+/// On output, a is overwritten by r, the first component of the vector in the rotated coordinate system where:
 /// $$r = sgn(a) * \sqrt{a^2 + b^2},~\text{if |a| > |b|}$$
 /// $$r = sgn(b) * \sqrt{a^2 + b^2},~\text{if |a| <= |b|}$$
 ///
@@ -105,7 +105,7 @@ pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: 
 /// SROT performs rotation of points in the plane.
 ///
 /// # Description
-/// SROT  applies a plane rotation matrix to a real sequence of ordered pairs:
+/// SROT applies a plane rotation matrix to a real sequence of ordered pairs:
 /// $$ (x_i, y_i),i=1,\cdots,n $$
 ///
 /// # Arguments

@@ -1,6 +1,6 @@
 use crate::common::{BlasInt, BlasIndex, Complex};
-use std::ops::{Mul, AddAssign, Add, MulAssign, DivAssign};
-use num_traits::{Signed, Float, FromPrimitive};
+use std::ops::{Mul, AddAssign, Add, MulAssign, DivAssign, Neg};
+use num_traits::{Signed, Float, FromPrimitive, Num};
 
 // prefix 'sd' is for s-functions and d-functions
 // prefix 'cz' is for c-functions and z-functions
@@ -40,6 +40,25 @@ pub unsafe fn sd_rotg<T>(a: *mut T, b: *mut T, c: *mut T, s: *mut T)
         }
         *a = r;
         *b = z;
+    }
+}
+
+#[inline(always)]
+pub unsafe fn cz_rotg<T>(a: *mut Complex<T>, b: *mut Complex<T>, c: *mut T, s: *mut Complex<T>)
+    where T: Float + From<i8> + Clone + Num + Neg<Output = T>
+{
+    let zero: T = From::from(0);
+    if (*a).norm() == zero {
+        *c = zero;
+        *s = Complex::new(From::from(1), From::from(0));
+        *a = *b;
+    } else {
+        let scale: T= (*a).norm() + (*b).norm();
+        let norm = scale * ((*a / scale).norm().powi(2) + (*b / scale).norm().powi(2));
+        let alpha = *a / norm;
+        *c = (*a).norm() / norm;
+        *s = alpha * (*b).conj() / norm;
+        *a = alpha * norm;
     }
 }
 
@@ -221,6 +240,7 @@ pub unsafe fn sd_rot<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y:
     }
 }
 
+// TODO: 这里的索引确认没问题吗，为什么会从 1 开始
 #[inline(always)]
 pub unsafe fn sd_rotm<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt, param: *const T)
     where T: Float + From<i8>
@@ -307,6 +327,39 @@ pub unsafe fn sd_rotm<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y
                 kx += inc_x as usize;
                 ky += inc_y as usize;
             }
+        }
+    }
+}
+
+#[inline(always)]
+pub unsafe fn cz_srot<T>(n: BlasInt, x: *mut Complex<T>, inc_x: BlasInt, y: *mut Complex<T>, inc_y: BlasInt, c: T, s: T)
+    where T: Float + From<i8>
+{
+    if n <= 0 {
+        return;
+    }
+    let mut tmp: Complex<T>;
+    if inc_x == 1 && inc_y == 1 {
+        for i in 0_usize..n as usize {
+            tmp = *x.add(i) * c + *y.add(i) * s;
+            *y.add(i) = *y.add(i) * c - *x.add(i) * s;
+            *x.add(i) = tmp;
+        }
+    } else {
+        let mut ix = 0_usize;
+        let mut iy = 0_usize;
+        if inc_x < 0 {
+            ix = (-inc_x * (n - 1)) as usize;
+        }
+        if inc_y < 0 {
+            iy = (-inc_y * (n - 1)) as usize;
+        }
+        for _ in 0..n {
+            tmp = *x.add(ix) * c + *y.add(iy) * s;
+            *y.add(iy) = *y.add(iy) * c - *x.add(ix) * s;
+            *x.add(ix) = tmp;
+            ix += inc_x as usize;
+            iy += inc_y as usize;
         }
     }
 }
