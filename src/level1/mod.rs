@@ -74,7 +74,7 @@
 //! 
 //! - [x] CCOPY - copy x into y
 //! 
-//! - [ ] CAXPY - y = a*x + y
+//! - [x] CAXPY - y = a*x + y
 //! 
 //! - [ ] CDOTU - dot product
 //! 

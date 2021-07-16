@@ -413,6 +413,40 @@ pub unsafe fn a_swap<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y:
     }
 }
 
+
+#[inline(always)]
+pub unsafe fn cz_axpy<T>(n: BlasInt, ca: *mut Complex<T>, cx: *mut Complex<T>, inc_x: BlasInt, cy: *mut Complex<T>, inc_y: BlasInt)
+    where T: Float + From<i8> + Clone + Num + Neg + Signed + Mul<Output = T>
+{
+    if n < 0 {
+        return;
+    }
+    if (*ca).l1_norm() == From::from(0){
+        return;
+    }
+
+    if inc_x == 1 && inc_y == 1{
+        for i in 0_usize..n as usize{
+            *cy.add(i) = (*cy.add(i)) + (*ca)*(*cx.add(i));
+        }
+    }
+    else {
+        let mut ix = 0_usize;
+        let mut iy = 0_usize;
+        if inc_x < 0 {
+            ix = (-inc_x * (n - 1)) as usize;
+        }
+        if inc_y < 0 {
+            iy = (-inc_y * (n - 1)) as usize;
+        }
+        for i in 0_usize..n as usize {
+            (*cy.add(iy)) = (*cy.add(iy)) + (*ca)*(*cx.add(ix));
+            ix = ix + inc_x as usize;
+            iy = iy + inc_y as usize;
+        }
+    }
+}
+
 #[inline(always)]
 pub unsafe fn sd_scal<T>(n: BlasInt, alpha: T, x: *mut T, inc_x: BlasInt)
     where T: Copy + Mul<Output = T>

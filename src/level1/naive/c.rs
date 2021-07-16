@@ -204,3 +204,26 @@ pub unsafe extern fn cblas_csscal(n: BlasInt, alpha: f32, x: *mut Complex32, inc
 pub unsafe extern fn cblas_ccopy(n: BlasInt, x: *const Complex32, inc_x: BlasInt, y: *mut Complex32, inc_y: BlasInt) {
     common::a_copy(n, x, inc_x, y, inc_y);
 }
+
+///CAXPY constant times a vector plus a vector.
+/// 
+/// # Description
+/// 
+//CAXPY  adds  a  scalar  multiple of a complex vector to another complex
+///vector.
+///
+///CAXPY computes a constant alpha times a vector x plus a vector y.   The
+///result overwrites the initial values of vector y.
+/// 
+///This routine performs the following vector operation:
+/// 
+/// $$ y \gets alpha*x + y $$
+/// 
+/// incx and incy specify the increment between two consecutive
+///elements of respectively vector x and y.
+
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern fn cblas_caxpy(n: BlasInt, ca: *mut Complex32, cx: *mut Complex32, inc_x: BlasInt, cy: *mut Complex32, inc_y: BlasInt){
+    common::cz_axpy(n, ca, cx, inc_x, cy, inc_y);
+}
