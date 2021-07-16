@@ -439,7 +439,7 @@ pub unsafe fn cz_axpy<T>(n: BlasInt, ca: *mut Complex<T>, cx: *mut Complex<T>, i
         if inc_y < 0 {
             iy = (-inc_y * (n - 1)) as usize;
         }
-        for i in 0_usize..n as usize {
+        for _ in 0_usize..n as usize {
             (*cy.add(iy)) = (*cy.add(iy)) + (*ca)*(*cx.add(ix));
             ix = ix + inc_x as usize;
             iy = iy + inc_y as usize;
