@@ -491,7 +491,7 @@ pub unsafe fn cz_dotu<T>(
     inc_y: BlasInt,
 ) -> Complex<T>
 where
-    T: Copy + Clone + Num + Signed + Float + From<i8> + Mul<Output = T>,
+    T: Clone + Num + Signed + Float + From<i8> + Mul<Output = T>,
 {
     let zero = From::from(0);
     let mut ctemp = Complex::new(zero, zero);
@@ -682,7 +682,7 @@ where
 }
 
 #[inline(always)]
-pub unsafe fn a_axpy<T>(n: BlasInt, a: T, x: *const T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt)
+pub unsafe fn sd_axpy<T>(n: BlasInt, a: T, x: *const T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt)
 where
     T: Copy + From<i8> + PartialEq + Mul<Output = T> + AddAssign,
 {

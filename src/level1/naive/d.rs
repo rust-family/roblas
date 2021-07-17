@@ -327,7 +327,7 @@ pub unsafe extern "C" fn cblas_daxpy(
     y: *mut f64,
     inc_y: BlasInt,
 ) {
-    common::a_axpy(n, a, x, inc_x, y, inc_y);
+    common::sd_axpy(n, a, x, inc_x, y, inc_y);
 }
 
 /// DDOT computes a dot product of two double precision vectors (l double precision inner product).

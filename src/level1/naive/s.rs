@@ -327,7 +327,7 @@ pub unsafe extern "C" fn cblas_saxpy(
     y: *mut f32,
     inc_y: BlasInt,
 ) {
-    common::a_axpy(n, a, x, inc_x, y, inc_y);
+    common::sd_axpy(n, a, x, inc_x, y, inc_y);
 }
 
 /// SDOT computes a dot product of two real vectors (l real inner product).

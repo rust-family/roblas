@@ -234,22 +234,22 @@ pub unsafe extern "C" fn cblas_ccopy(
     common::a_copy(n, x, inc_x, y, inc_y);
 }
 
-///CAXPY constant times a vector plus a vector.
+/// CAXPY constant times a vector plus a vector.
 ///
 /// # Description
 ///
-//CAXPY  adds  a  scalar  multiple of a complex vector to another complex
-///vector.
+/// CAXPY  adds  a  scalar multiple of a complex vector to another complex
+/// vector.
 ///
-///CAXPY computes a constant alpha times a vector x plus a vector y.   The
-///result overwrites the initial values of vector y.
+/// CAXPY computes a constant alpha times a vector x plus a vector y.   The
+/// result overwrites the initial values of vector y.
 ///
-///This routine performs the following vector operation:
+/// This routine performs the following vector operation:
 ///
 /// $$ y \gets alpha*x + y $$
 ///
-/// incx and incy specify the increment between two consecutive
-///elements of respectively vector x and y.
+/// inc_x and inc_y specify the increment between two consecutive
+/// elements of respectively vector x and y.
 ///
 /// # Argument
 ///
@@ -282,15 +282,13 @@ pub unsafe extern "C" fn cblas_caxpy(
 ///
 /// CDOTU computes a dot product of two complex vectors.
 ///
-///This routine performs the following vector operation:
+/// This routine performs the following vector operation:
 ///
+/// $$ CDOTU \gets x^T * y = \sum_{i=1}^n x(i)*y(i) $$
 ///
-///$$ CDOTU \gets x^T * y = \sum_{i=1}^n x(i)*y(i) $$
+/// where x and y are real vectors, and $x^T$ is the transpose of x.
 ///
-///where x and y are real vectors, and $x^T$ is the transpose of
-///x.
-///
-///If $n \le 0$, CDOTU is set to 0.
+/// If $n \le 0$, CDOTU is set to 0.
 ///
 /// # Argument
 ///
