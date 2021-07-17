@@ -1,6 +1,6 @@
-use crate::common::{BlasInt, BlasIndex, Complex};
-use std::ops::{Mul, AddAssign, Add, MulAssign, DivAssign, Neg};
-use num_traits::{Signed, Float, FromPrimitive, Num};
+use crate::common::{BlasIndex, BlasInt, Complex};
+use num_traits::{Float, FromPrimitive, Num, Signed};
+use std::ops::{Add, AddAssign, DivAssign, Mul, MulAssign, Neg};
 
 // prefix 'sd' is for s-functions and d-functions
 // prefix 'cz' is for c-functions and z-functions
@@ -8,7 +8,8 @@ use num_traits::{Signed, Float, FromPrimitive, Num};
 
 #[inline(always)]
 pub unsafe fn sd_rotg<T>(a: *mut T, b: *mut T, c: *mut T, s: *mut T)
-    where T: Float + From<i8> + MulAssign
+where
+    T: Float + From<i8> + MulAssign,
 {
     let one = From::from(1);
     let zero = From::from(0);
@@ -45,7 +46,8 @@ pub unsafe fn sd_rotg<T>(a: *mut T, b: *mut T, c: *mut T, s: *mut T)
 
 #[inline(always)]
 pub unsafe fn cz_rotg<T>(a: *mut Complex<T>, b: *mut Complex<T>, c: *mut T, s: *mut Complex<T>)
-    where T: Float + From<i8> + Clone + Num + Neg<Output = T>
+where
+    T: Float + From<i8> + Clone + Num + Neg<Output = T>,
 {
     let zero: T = From::from(0);
     if (*a).norm() == zero {
@@ -53,7 +55,7 @@ pub unsafe fn cz_rotg<T>(a: *mut Complex<T>, b: *mut Complex<T>, c: *mut T, s: *
         *s = Complex::new(From::from(1), From::from(0));
         *a = *b;
     } else {
-        let scale: T= (*a).norm() + (*b).norm();
+        let scale: T = (*a).norm() + (*b).norm();
         let norm = scale * ((*a / scale).norm().powi(2) + (*b / scale).norm().powi(2));
         let alpha = *a / norm;
         *c = (*a).norm() / norm;
@@ -64,7 +66,8 @@ pub unsafe fn cz_rotg<T>(a: *mut Complex<T>, b: *mut Complex<T>, c: *mut T, s: *
 
 #[inline(always)]
 pub unsafe fn sd_rotmg<T>(d1: *mut T, d2: *mut T, b1: *mut T, b2: T, params: *mut T)
-    where T: Float + FromPrimitive + From<u16> + DivAssign + MulAssign
+where
+    T: Float + FromPrimitive + From<u16> + DivAssign + MulAssign,
 {
     // constant
     let zero: T = From::from(0);
@@ -73,7 +76,6 @@ pub unsafe fn sd_rotmg<T>(d1: *mut T, d2: *mut T, b1: *mut T, b2: T, params: *mu
     let gam: T = From::from(4096);
     let gamsq: T = FromPrimitive::from_f64(1.67772e7_f64).unwrap();
     let rgamsq: T = FromPrimitive::from_f64(5.96046e-8_f64).unwrap();
-
 
     // process variable
     let mut flag = zero;
@@ -209,12 +211,22 @@ pub unsafe fn sd_rotmg<T>(d1: *mut T, d2: *mut T, b1: *mut T, b2: T, params: *mu
 }
 
 #[inline(always)]
-pub unsafe fn sd_rot<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt, c: T, s: T)
-    where T: Float
+pub unsafe fn sd_rot<T>(
+    n: BlasInt,
+    x: *mut T,
+    inc_x: BlasInt,
+    y: *mut T,
+    inc_y: BlasInt,
+    c: T,
+    s: T,
+) where
+    T: Float,
 {
     let inc_x_us = inc_x as usize;
     let inc_y_us = inc_y as usize;
-    if n <= 0 { return; }
+    if n <= 0 {
+        return;
+    }
     if inc_x == 1 && inc_y == 1 {
         for i in 0..n as usize {
             let stemp = c * *x.add(i) + s * *y.add(i);
@@ -242,15 +254,24 @@ pub unsafe fn sd_rot<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y:
 
 // TODO: 这里的索引确认没问题吗，为什么会从 1 开始
 #[inline(always)]
-pub unsafe fn sd_rotm<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt, param: *const T)
-    where T: Float + From<i8>
+pub unsafe fn sd_rotm<T>(
+    n: BlasInt,
+    x: *mut T,
+    inc_x: BlasInt,
+    y: *mut T,
+    inc_y: BlasInt,
+    param: *const T,
+) where
+    T: Float + From<i8>,
 {
     // Const var
     let zero = From::from(0);
     let two = From::from(2);
     // Subroutine
     let flag = *param.add(0);
-    if n <= 0 || flag + two == zero { return; }
+    if n <= 0 || flag + two == zero {
+        return;
+    }
     if inc_x == inc_y && inc_x > 0 {
         let n_steps = (n * inc_x) as usize;
         if flag < zero {
@@ -264,7 +285,7 @@ pub unsafe fn sd_rotm<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y
                 *x.add(i) = w * sh11 + z * sh12;
                 *y.add(i) = w * sh21 + z * sh22;
             }
-        }else if flag == zero {
+        } else if flag == zero {
             let sh12 = *param.add(3);
             let sh21 = *param.add(2);
             for i in (0..n_steps).step_by(inc_y as usize) {
@@ -273,7 +294,7 @@ pub unsafe fn sd_rotm<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y
                 *x.add(i) = w + z * sh12;
                 *y.add(i) = w * sh21 + z;
             }
-        }else {
+        } else {
             let sh11 = *param.add(1);
             let sh22 = *param.add(4);
             for i in (0..n_steps).step_by(inc_x as usize) {
@@ -305,7 +326,7 @@ pub unsafe fn sd_rotm<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y
                 kx += inc_x as usize;
                 ky += inc_y as usize;
             }
-        }else if flag == zero {
+        } else if flag == zero {
             let sh12 = *param.add(3);
             let sh21 = *param.add(2);
             for _ in 0..n {
@@ -316,7 +337,7 @@ pub unsafe fn sd_rotm<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y
                 kx += inc_x as usize;
                 ky += inc_y as usize;
             }
-        }else {
+        } else {
             let sh11 = *param.add(1);
             let sh22 = *param.add(4);
             for _ in 0..n {
@@ -332,8 +353,16 @@ pub unsafe fn sd_rotm<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y
 }
 
 #[inline(always)]
-pub unsafe fn cz_srot<T>(n: BlasInt, x: *mut Complex<T>, inc_x: BlasInt, y: *mut Complex<T>, inc_y: BlasInt, c: T, s: T)
-    where T: Float + From<i8>
+pub unsafe fn cz_srot<T>(
+    n: BlasInt,
+    x: *mut Complex<T>,
+    inc_x: BlasInt,
+    y: *mut Complex<T>,
+    inc_y: BlasInt,
+    c: T,
+    s: T,
+) where
+    T: Float + From<i8>,
 {
     if n <= 0 {
         return;
@@ -367,7 +396,8 @@ pub unsafe fn cz_srot<T>(n: BlasInt, x: *mut Complex<T>, inc_x: BlasInt, y: *mut
 /// Apply to all type of swap function.
 #[inline(always)]
 pub unsafe fn a_swap<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt)
-    where T: Copy
+where
+    T: Copy,
 {
     if n < 0 {
         return;
@@ -413,24 +443,29 @@ pub unsafe fn a_swap<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y:
     }
 }
 
-
 #[inline(always)]
-pub unsafe fn cz_axpy<T>(n: BlasInt, ca: *mut Complex<T>, cx: *mut Complex<T>, inc_x: BlasInt, cy: *mut Complex<T>, inc_y: BlasInt)
-    where T: Float + From<i8> + Clone + Num + Neg + Signed + Mul<Output = T>
+pub unsafe fn cz_axpy<T>(
+    n: BlasInt,
+    ca: *const Complex<T>,
+    cx: *const Complex<T>,
+    inc_x: BlasInt,
+    cy: *mut Complex<T>,
+    inc_y: BlasInt,
+) where
+    T: Float + From<i8> + Signed + Mul<Output = T>,
 {
     if n < 0 {
         return;
     }
-    if (*ca).l1_norm() == From::from(0){
+    if (*ca).l1_norm() == From::from(0) {
         return;
     }
 
-    if inc_x == 1 && inc_y == 1{
-        for i in 0_usize..n as usize{
-            *cy.add(i) = (*cy.add(i)) + (*ca)*(*cx.add(i));
+    if inc_x == 1 && inc_y == 1 {
+        for i in 0_usize..n as usize {
+            *cy.add(i) = (*cy.add(i)) + (*ca) * (*cx.add(i));
         }
-    }
-    else {
+    } else {
         let mut ix = 0_usize;
         let mut iy = 0_usize;
         if inc_x < 0 {
@@ -440,7 +475,7 @@ pub unsafe fn cz_axpy<T>(n: BlasInt, ca: *mut Complex<T>, cx: *mut Complex<T>, i
             iy = (-inc_y * (n - 1)) as usize;
         }
         for _ in 0_usize..n as usize {
-            (*cy.add(iy)) = (*cy.add(iy)) + (*ca)*(*cx.add(ix));
+            (*cy.add(iy)) = (*cy.add(iy)) + (*ca) * (*cx.add(ix));
             ix = ix + inc_x as usize;
             iy = iy + inc_y as usize;
         }
@@ -448,8 +483,47 @@ pub unsafe fn cz_axpy<T>(n: BlasInt, ca: *mut Complex<T>, cx: *mut Complex<T>, i
 }
 
 #[inline(always)]
+pub unsafe fn cz_dotu<T>(
+    n: BlasInt,
+    cx: *const T,
+    inc_x: BlasInt,
+    cy: *const T,
+    inc_y: BlasInt,
+) -> Complex<T>
+where
+    T: Copy + Clone + Num + Signed + Float + From<i8> + Mul<Output = T>,
+{
+    let zero = From::from(0);
+    let mut ctemp = Complex::new(zero, zero);
+    if n < 0 {
+        return ctemp;
+    }
+    if inc_x == 0 && inc_y == 1 {
+        for i in 0_usize..n as usize {
+            ctemp = ctemp + (*cx.add(i)) * (*cy.add(i));
+        }
+    } else {
+        let mut ix = 1;
+        let mut iy = 1;
+        if inc_x < 0 {
+            ix = -inc_x * (n - 1) + 1;
+        }
+        if inc_x < 0 {
+            iy = -inc_y * (n - 1) + 1;
+        }
+        for _ in 0_usize..n as usize {
+            ctemp = ctemp + (*cx.add(ix as usize)) * (*cy.add(iy as usize));
+            ix = ix + inc_x;
+            iy = iy + inc_y;
+        }
+    }
+    ctemp
+}
+
+#[inline(always)]
 pub unsafe fn sd_scal<T>(n: BlasInt, alpha: T, x: *mut T, inc_x: BlasInt)
-    where T: Copy + Mul<Output = T>
+where
+    T: Copy + Mul<Output = T>,
 {
     if n < 0 || inc_x < 0 {
         return;
@@ -486,7 +560,8 @@ pub unsafe fn sd_scal<T>(n: BlasInt, alpha: T, x: *mut T, inc_x: BlasInt)
 
 #[inline(always)]
 pub unsafe fn cz_scal<T>(n: BlasInt, p_alpha: *const T, x: *mut T, inc_x: BlasInt)
-    where T: Copy + Mul<Output = T>
+where
+    T: Copy + Mul<Output = T>,
 {
     if n < 0 || inc_x < 0 {
         return;
@@ -524,7 +599,8 @@ pub unsafe fn cz_scal<T>(n: BlasInt, p_alpha: *const T, x: *mut T, inc_x: BlasIn
 
 #[inline(always)]
 pub unsafe fn cz_sscal<T>(n: BlasInt, alpha: T, x: *mut Complex<T>, inc_x: BlasInt)
-    where T: Float
+where
+    T: Float,
 {
     if n < 0 || inc_x < 0 {
         return;
@@ -561,7 +637,8 @@ pub unsafe fn cz_sscal<T>(n: BlasInt, alpha: T, x: *mut Complex<T>, inc_x: BlasI
 
 #[inline(always)]
 pub unsafe fn a_copy<T>(n: BlasInt, x: *const T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt)
-    where T: Copy
+where
+    T: Copy,
 {
     if n <= 0 {
         return;
@@ -606,11 +683,16 @@ pub unsafe fn a_copy<T>(n: BlasInt, x: *const T, inc_x: BlasInt, y: *mut T, inc_
 
 #[inline(always)]
 pub unsafe fn a_axpy<T>(n: BlasInt, a: T, x: *const T, inc_x: BlasInt, y: *mut T, inc_y: BlasInt)
-    where T: Copy + From<i8> + PartialEq + Mul<Output = T> + AddAssign
+where
+    T: Copy + From<i8> + PartialEq + Mul<Output = T> + AddAssign,
 {
     let zero = T::from(0);
-    if n <= 0 { return; }
-    if a == zero { return; }
+    if n <= 0 {
+        return;
+    }
+    if a == zero {
+        return;
+    }
     if inc_x == 1 && inc_y == 1 {
         let m = n % 4;
         if m != 0 {
@@ -618,7 +700,9 @@ pub unsafe fn a_axpy<T>(n: BlasInt, a: T, x: *const T, inc_x: BlasInt, y: *mut T
                 *y.add(i) += a * *x.add(i);
             }
         }
-        if n < 4 { return; }
+        if n < 4 {
+            return;
+        }
         let mp1 = m as usize;
         for i in (mp1..(n as usize)).step_by(4) {
             *y.add(i) += a * *x.add(i);
@@ -645,11 +729,14 @@ pub unsafe fn a_axpy<T>(n: BlasInt, a: T, x: *const T, inc_x: BlasInt, y: *mut T
 
 #[inline(always)]
 pub unsafe fn sd_sdot<T>(n: BlasInt, x: *const T, inc_x: BlasInt, y: *const T, inc_y: BlasInt) -> T
-    where T: Copy + From<i8> + PartialEq + Mul<Output = T> + Add<Output = T> + AddAssign
+where
+    T: Copy + From<i8> + PartialEq + Mul<Output = T> + Add<Output = T> + AddAssign,
 {
     let zero = T::from(0);
     let mut stemp = T::from(0);
-    if n <= 0 { return zero; }
+    if n <= 0 {
+        return zero;
+    }
     if inc_x == 1 && inc_y == 1 {
         let m = n % 5;
         for i in 0..m as usize {
@@ -660,7 +747,11 @@ pub unsafe fn sd_sdot<T>(n: BlasInt, x: *const T, inc_x: BlasInt, y: *const T, i
         }
         let mp1 = m as usize;
         for i in (mp1..(n as usize)).step_by(5) {
-            stemp += *x.add(i) * *y.add(i) + *x.add(i+1) * *y.add(i+1) + *x.add(i+2) * *y.add(i+2) + *x.add(i+3) * *y.add(i+3) + *x.add(i+4) * *y.add(i+4);
+            stemp += *x.add(i) * *y.add(i)
+                + *x.add(i + 1) * *y.add(i + 1)
+                + *x.add(i + 2) * *y.add(i + 2)
+                + *x.add(i + 3) * *y.add(i + 3)
+                + *x.add(i + 4) * *y.add(i + 4);
         }
     } else {
         let mut ix = 0_usize;
@@ -682,7 +773,8 @@ pub unsafe fn sd_sdot<T>(n: BlasInt, x: *const T, inc_x: BlasInt, y: *const T, i
 
 #[inline(always)]
 pub unsafe fn sd_asum<T>(n: BlasInt, x: *const T, inc_x: BlasInt) -> T
-    where T: Copy + From<i8> + PartialEq + Mul<Output = T> + Add<Output = T> + AddAssign + Signed
+where
+    T: Copy + From<i8> + PartialEq + Mul<Output = T> + Add<Output = T> + AddAssign + Signed,
 {
     let mut sasum = From::from(0);
     let mut tmp = From::from(0);
@@ -702,9 +794,12 @@ pub unsafe fn sd_asum<T>(n: BlasInt, x: *const T, inc_x: BlasInt) -> T
             }
         }
         for i in (m..(n as usize)).step_by(6) {
-            tmp += (*x.add(i)).abs() + (*x.add(i + 1)).abs() +
-                (*x.add(i + 2)).abs() + (*x.add(i + 3)).abs() +
-                (*x.add(i + 4)).abs() + (*x.add(i + 5)).abs()
+            tmp += (*x.add(i)).abs()
+                + (*x.add(i + 1)).abs()
+                + (*x.add(i + 2)).abs()
+                + (*x.add(i + 3)).abs()
+                + (*x.add(i + 4)).abs()
+                + (*x.add(i + 5)).abs()
         }
     } else {
         // code for increment not equal to 1
@@ -719,7 +814,8 @@ pub unsafe fn sd_asum<T>(n: BlasInt, x: *const T, inc_x: BlasInt) -> T
 
 #[inline(always)]
 pub unsafe fn sd_nrm2<T>(n: BlasInt, x: *const T, inc_x: BlasInt) -> T
-    where T: From<i8> + PartialEq + Mul<Output = T> + Add<Output = T> + AddAssign + Float
+where
+    T: From<i8> + PartialEq + Mul<Output = T> + Add<Output = T> + AddAssign + Float,
 {
     let one: T = From::from(1);
     let zero: T = From::from(0);
@@ -747,7 +843,8 @@ pub unsafe fn sd_nrm2<T>(n: BlasInt, x: *const T, inc_x: BlasInt) -> T
 
 #[inline(always)]
 pub unsafe fn sd_iamax<T>(n: BlasInt, x: *const T, inc_x: BlasInt) -> BlasIndex
-    where T: Copy + PartialOrd + Signed
+where
+    T: Copy + PartialOrd + Signed,
 {
     if n < 1 || inc_x <= 0 {
         0
@@ -782,7 +879,8 @@ pub unsafe fn sd_iamax<T>(n: BlasInt, x: *const T, inc_x: BlasInt) -> BlasIndex
 
 #[inline(always)]
 pub unsafe fn sd_iamin<T>(n: BlasInt, x: *const T, inc_x: BlasInt) -> BlasIndex
-    where T: Copy + PartialOrd + Signed
+where
+    T: Copy + PartialOrd + Signed,
 {
     if n < 1 || inc_x <= 0 {
         0

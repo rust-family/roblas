@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod d_test {
-    use roblas::level1::*;
     use roblas::common::BlasInt;
+    use roblas::level1::*;
 
     #[test]
     fn drotg1() {
@@ -94,12 +94,19 @@ mod d_test {
             cblas_daxpy(3, 0.5_f64, v1.as_ptr(), 1, v2.as_mut_ptr(), 1);
         }
         assert_eq!(v2, vec![2.5_f64, 4_f64, 5.5_f64]);
-        let v3 = vec![1_f64, 2_f64, 3_f64, 1_f64, 2_f64, 3_f64, 1_f64, 2_f64, 3_f64];
-        let mut v4 = vec![2_f64, 3_f64, 4_f64, 2_f64, 3_f64, 4_f64, 2_f64, 3_f64, 4_f64];
+        let v3 = vec![
+            1_f64, 2_f64, 3_f64, 1_f64, 2_f64, 3_f64, 1_f64, 2_f64, 3_f64,
+        ];
+        let mut v4 = vec![
+            2_f64, 3_f64, 4_f64, 2_f64, 3_f64, 4_f64, 2_f64, 3_f64, 4_f64,
+        ];
         unsafe {
             cblas_daxpy(9, 0.5_f64, v3.as_ptr(), 1, v4.as_mut_ptr(), 1);
         }
-        assert_eq!(v4, vec![2.5_f64, 4_f64, 5.5_f64, 2.5_f64, 4_f64, 5.5_f64, 2.5_f64, 4_f64, 5.5_f64]);
+        assert_eq!(
+            v4,
+            vec![2.5_f64, 4_f64, 5.5_f64, 2.5_f64, 4_f64, 5.5_f64, 2.5_f64, 4_f64, 5.5_f64]
+        );
     }
 
     #[test]
@@ -111,15 +118,17 @@ mod d_test {
         }
         assert_eq!(result, 30_f64);
         // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
-        let v2 = vec![1_f64, 2_f64, 3_f64, 4_f64, 5_f64,
-                                1_f64, 2_f64, 3_f64, 4_f64, 5_f64];
+        let v2 = vec![
+            1_f64, 2_f64, 3_f64, 4_f64, 5_f64, 1_f64, 2_f64, 3_f64, 4_f64, 5_f64,
+        ];
         unsafe {
             result = cblas_ddot(10, v2.as_ptr(), 1, v2.as_ptr(), 1);
         }
         assert_eq!(result, 110_f64);
-        let v3 = vec![1_f64, 2_f64, 3_f64, 4_f64, 5_f64,
-                                1_f64, 2_f64, 3_f64, 4_f64, 5_f64,
-                                1_f64, 2_f64, 3_f64,];
+        let v3 = vec![
+            1_f64, 2_f64, 3_f64, 4_f64, 5_f64, 1_f64, 2_f64, 3_f64, 4_f64, 5_f64, 1_f64, 2_f64,
+            3_f64,
+        ];
         unsafe {
             result = cblas_ddot(13, v3.as_ptr(), 1, v3.as_ptr(), 1);
         }

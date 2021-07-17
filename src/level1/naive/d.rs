@@ -1,5 +1,5 @@
-use crate::common::{BlasInt, BlasIndex};
 use super::common;
+use crate::common::{BlasIndex, BlasInt};
 
 /// DROTG construct givens plane rotation.
 ///
@@ -50,10 +50,9 @@ use super::common;
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_drotg(a: *mut f64, b: *mut f64, c: *mut f64, s: *mut f64) {
+pub unsafe extern "C" fn cblas_drotg(a: *mut f64, b: *mut f64, c: *mut f64, s: *mut f64) {
     common::sd_rotg(a, b, c, s);
 }
-
 
 /// DROTMG computes the elements of a modified Givens plane rotation matrix.
 ///
@@ -99,7 +98,13 @@ pub unsafe extern fn cblas_drotg(a: *mut f64, b: *mut f64, c: *mut f64, s: *mut 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_drotmg(d1: *mut f64, d2: *mut f64, b1: *mut f64, b2: f64, params: *mut f64) {
+pub unsafe extern "C" fn cblas_drotmg(
+    d1: *mut f64,
+    d2: *mut f64,
+    b1: *mut f64,
+    b2: f64,
+    params: *mut f64,
+) {
     common::sd_rotmg(d1, d2, b1, b2, params);
 }
 
@@ -131,7 +136,15 @@ pub unsafe extern fn cblas_drotmg(d1: *mut f64, d2: *mut f64, b1: *mut f64, b2: 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_drot(n: BlasInt, x: *mut f64, inc_x: BlasInt, y: *mut f64, inc_y: BlasInt, c: f64, s: f64) {
+pub unsafe extern "C" fn cblas_drot(
+    n: BlasInt,
+    x: *mut f64,
+    inc_x: BlasInt,
+    y: *mut f64,
+    inc_y: BlasInt,
+    c: f64,
+    s: f64,
+) {
     common::sd_rot(n, x, inc_x, y, inc_y, c, s);
 }
 
@@ -170,7 +183,14 @@ pub unsafe extern fn cblas_drot(n: BlasInt, x: *mut f64, inc_x: BlasInt, y: *mut
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_drotm(n: BlasInt, x: *mut f64, inc_x: BlasInt, y: *mut f64, inc_y: BlasInt, param: *const f64) {
+pub unsafe extern "C" fn cblas_drotm(
+    n: BlasInt,
+    x: *mut f64,
+    inc_x: BlasInt,
+    y: *mut f64,
+    inc_y: BlasInt,
+    param: *const f64,
+) {
     common::sd_rotm(n, x, inc_x, y, inc_y, param);
 }
 
@@ -200,7 +220,13 @@ pub unsafe extern fn cblas_drotm(n: BlasInt, x: *mut f64, inc_x: BlasInt, y: *mu
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_dswap(n: BlasInt, x: *mut f64, inc_x: BlasInt, y: *mut f64, inc_y: BlasInt) {
+pub unsafe extern "C" fn cblas_dswap(
+    n: BlasInt,
+    x: *mut f64,
+    inc_x: BlasInt,
+    y: *mut f64,
+    inc_y: BlasInt,
+) {
     common::a_swap(n, x, inc_x, y, inc_y);
 }
 
@@ -226,7 +252,7 @@ pub unsafe extern fn cblas_dswap(n: BlasInt, x: *mut f64, inc_x: BlasInt, y: *mu
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_dscal(n: BlasInt, alpha: f64, x: *mut f64, inc_x: BlasInt) {
+pub unsafe extern "C" fn cblas_dscal(n: BlasInt, alpha: f64, x: *mut f64, inc_x: BlasInt) {
     common::sd_scal(n, alpha, x, inc_x);
 }
 
@@ -251,7 +277,13 @@ pub unsafe extern fn cblas_dscal(n: BlasInt, alpha: f64, x: *mut f64, inc_x: Bla
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_dcopy(n: BlasInt, x: *const f64, inc_x: BlasInt, y: *mut f64, inc_y: BlasInt) {
+pub unsafe extern "C" fn cblas_dcopy(
+    n: BlasInt,
+    x: *const f64,
+    inc_x: BlasInt,
+    y: *mut f64,
+    inc_y: BlasInt,
+) {
     common::a_copy(n, x, inc_x, y, inc_y);
 }
 
@@ -287,7 +319,14 @@ pub unsafe extern fn cblas_dcopy(n: BlasInt, x: *const f64, inc_x: BlasInt, y: *
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_daxpy(n: BlasInt, a: f64, x: *const f64, inc_x: BlasInt, y: *mut f64, inc_y: BlasInt) {
+pub unsafe extern "C" fn cblas_daxpy(
+    n: BlasInt,
+    a: f64,
+    x: *const f64,
+    inc_x: BlasInt,
+    y: *mut f64,
+    inc_y: BlasInt,
+) {
     common::a_axpy(n, a, x, inc_x, y, inc_y);
 }
 
@@ -317,7 +356,13 @@ pub unsafe extern fn cblas_daxpy(n: BlasInt, a: f64, x: *const f64, inc_x: BlasI
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_ddot(n: BlasInt, x: *const f64, inc_x: BlasInt, y: *const f64, inc_y: BlasInt) -> f64 {
+pub unsafe extern "C" fn cblas_ddot(
+    n: BlasInt,
+    x: *const f64,
+    inc_x: BlasInt,
+    y: *const f64,
+    inc_y: BlasInt,
+) -> f64 {
     common::sd_sdot(n, x, inc_x, y, inc_y)
 }
 
@@ -354,9 +399,17 @@ pub unsafe extern fn cblas_ddot(n: BlasInt, x: *const f64, inc_x: BlasInt, y: *c
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_dsdot(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *const f32, inc_y: BlasInt) -> f64 {
+pub unsafe extern "C" fn cblas_dsdot(
+    n: BlasInt,
+    x: *const f32,
+    inc_x: BlasInt,
+    y: *const f32,
+    inc_y: BlasInt,
+) -> f64 {
     let mut stemp: f64 = 0_f64;
-    if n <= 0 { return 0_f64; }
+    if n <= 0 {
+        return 0_f64;
+    }
     if inc_x == 1 && inc_y == 1 {
         let m = n % 5;
         for i in 0..m as usize {
@@ -367,11 +420,11 @@ pub unsafe extern fn cblas_dsdot(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *
         }
         let mp1 = m as usize;
         for i in (mp1..(n as usize)).step_by(5) {
-            stemp += *x.add(i) as f64 * *y.add(i) as f64 +
-                *x.add(i+1) as f64 * *y.add(i+1) as f64 +
-                *x.add(i+2) as f64 * *y.add(i+2) as f64 +
-                *x.add(i+3) as f64 * *y.add(i+3) as f64 +
-                *x.add(i+4) as f64 * *y.add(i+4) as f64;
+            stemp += *x.add(i) as f64 * *y.add(i) as f64
+                + *x.add(i + 1) as f64 * *y.add(i + 1) as f64
+                + *x.add(i + 2) as f64 * *y.add(i + 2) as f64
+                + *x.add(i + 3) as f64 * *y.add(i + 3) as f64
+                + *x.add(i + 4) as f64 * *y.add(i + 4) as f64;
         }
     } else {
         let mut ix = 0_usize;
@@ -409,7 +462,7 @@ pub unsafe extern fn cblas_dsdot(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_dasum(n: BlasInt, x: *const f64, inc_x: BlasInt) -> f64 {
+pub unsafe extern "C" fn cblas_dasum(n: BlasInt, x: *const f64, inc_x: BlasInt) -> f64 {
     common::sd_asum(n, x, inc_x)
 }
 
@@ -433,7 +486,7 @@ pub unsafe extern fn cblas_dasum(n: BlasInt, x: *const f64, inc_x: BlasInt) -> f
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_dnrm2(n: BlasInt, x: *const f64, inc_x: BlasInt) -> f64 {
+pub unsafe extern "C" fn cblas_dnrm2(n: BlasInt, x: *const f64, inc_x: BlasInt) -> f64 {
     common::sd_nrm2(n, x, inc_x)
 }
 
@@ -464,7 +517,7 @@ pub unsafe extern fn cblas_dnrm2(n: BlasInt, x: *const f64, inc_x: BlasInt) -> f
 /// The returned index start from 0.
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_idamax(n: BlasInt, x: *const f64, inc_x: BlasInt) -> BlasIndex {
+pub unsafe extern "C" fn cblas_idamax(n: BlasInt, x: *const f64, inc_x: BlasInt) -> BlasIndex {
     common::sd_iamax(n, x, inc_x)
 }
 
@@ -496,6 +549,6 @@ pub unsafe extern fn cblas_idamax(n: BlasInt, x: *const f64, inc_x: BlasInt) -> 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_idamin(n: BlasInt, x: *const f64, inc_x: BlasInt) -> BlasIndex {
+pub unsafe extern "C" fn cblas_idamin(n: BlasInt, x: *const f64, inc_x: BlasInt) -> BlasIndex {
     common::sd_iamin(n, x, inc_x)
 }

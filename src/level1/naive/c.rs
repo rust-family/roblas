@@ -1,5 +1,5 @@
-use crate::common::{BlasInt, Complex32};
 use super::common;
+use crate::common::{BlasInt, Complex32};
 
 /// CROTG construct givens plane rotation.
 ///
@@ -55,7 +55,12 @@ use super::common;
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_crotg(a: *mut Complex32, b: *mut Complex32, c: *mut f32, s: *mut Complex32) {
+pub unsafe extern "C" fn cblas_crotg(
+    a: *mut Complex32,
+    b: *mut Complex32,
+    c: *mut f32,
+    s: *mut Complex32,
+) {
     common::cz_rotg(a, b, c, s);
 }
 
@@ -93,7 +98,15 @@ pub unsafe extern fn cblas_crotg(a: *mut Complex32, b: *mut Complex32, c: *mut f
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_csrot(n: BlasInt, x: *mut Complex32, inc_x: BlasInt, y: *mut Complex32, inc_y: BlasInt, c: f32, s: f32) {
+pub unsafe extern "C" fn cblas_csrot(
+    n: BlasInt,
+    x: *mut Complex32,
+    inc_x: BlasInt,
+    y: *mut Complex32,
+    inc_y: BlasInt,
+    c: f32,
+    s: f32,
+) {
     common::cz_srot(n, x, inc_x, y, inc_y, c, s);
 }
 
@@ -123,10 +136,15 @@ pub unsafe extern fn cblas_csrot(n: BlasInt, x: *mut Complex32, inc_x: BlasInt, 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_cswap(n: BlasInt, x: *mut Complex32, inc_x: BlasInt, y: *mut Complex32, inc_y: BlasInt) {
+pub unsafe extern "C" fn cblas_cswap(
+    n: BlasInt,
+    x: *mut Complex32,
+    inc_x: BlasInt,
+    y: *mut Complex32,
+    inc_y: BlasInt,
+) {
     common::a_swap(n, x, inc_x, y, inc_y);
 }
-
 
 /// CSCAL scales a complex vector by a complex constant.
 ///
@@ -150,7 +168,12 @@ pub unsafe extern fn cblas_cswap(n: BlasInt, x: *mut Complex32, inc_x: BlasInt, 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_cscal(n: BlasInt, p_alpha: *const Complex32, x: *mut Complex32, inc_x: BlasInt) {
+pub unsafe extern "C" fn cblas_cscal(
+    n: BlasInt,
+    p_alpha: *const Complex32,
+    x: *mut Complex32,
+    inc_x: BlasInt,
+) {
     common::cz_scal(n, p_alpha, x, inc_x);
 }
 
@@ -176,7 +199,7 @@ pub unsafe extern fn cblas_cscal(n: BlasInt, p_alpha: *const Complex32, x: *mut 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_csscal(n: BlasInt, alpha: f32, x: *mut Complex32, inc_x: BlasInt) {
+pub unsafe extern "C" fn cblas_csscal(n: BlasInt, alpha: f32, x: *mut Complex32, inc_x: BlasInt) {
     common::cz_sscal(n, alpha, x, inc_x);
 }
 
@@ -201,29 +224,95 @@ pub unsafe extern fn cblas_csscal(n: BlasInt, alpha: f32, x: *mut Complex32, inc
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_ccopy(n: BlasInt, x: *const Complex32, inc_x: BlasInt, y: *mut Complex32, inc_y: BlasInt) {
+pub unsafe extern "C" fn cblas_ccopy(
+    n: BlasInt,
+    x: *const Complex32,
+    inc_x: BlasInt,
+    y: *mut Complex32,
+    inc_y: BlasInt,
+) {
     common::a_copy(n, x, inc_x, y, inc_y);
 }
 
 ///CAXPY constant times a vector plus a vector.
-/// 
+///
 /// # Description
-/// 
+///
 //CAXPY  adds  a  scalar  multiple of a complex vector to another complex
 ///vector.
 ///
 ///CAXPY computes a constant alpha times a vector x plus a vector y.   The
 ///result overwrites the initial values of vector y.
-/// 
+///
 ///This routine performs the following vector operation:
-/// 
+///
 /// $$ y \gets alpha*x + y $$
-/// 
+///
 /// incx and incy specify the increment between two consecutive
 ///elements of respectively vector x and y.
+///
+/// # Argument
+///
+/// * `n`(in) - Number of vector elements to be copied.  If $ n \le 0$, this routine returns without computation.
+///
+/// * `x`(in) - Vector from which to copy.
+///
+/// * `incx`(in) - Increment between elements of x. If incx = 0, the results will be unpredictable.
+///
+/// * `y`(in) - Array of dimension (n-1) * |incy| + 1, result vector.
+///
+/// * `incy`(in) - Increment between elements of y.  If incy = 0, the results will be unpredictable.
 
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_caxpy(n: BlasInt, ca: *mut Complex32, cx: *mut Complex32, inc_x: BlasInt, cy: *mut Complex32, inc_y: BlasInt){
-    common::cz_axpy(n, ca, cx, inc_x, cy, inc_y);
+pub unsafe extern "C" fn cblas_caxpy(
+    n: BlasInt,
+    a: *const Complex32,
+    x: *const Complex32,
+    inc_x: BlasInt,
+    y: *mut Complex32,
+    inc_y: BlasInt,
+) {
+    common::cz_axpy(n, a, x, inc_x, y, inc_y);
+}
+
+/// CDOTU forms the dot product of two complex vectors
+///
+/// # Description
+///
+/// CDOTU computes a dot product of two complex vectors.
+///
+///This routine performs the following vector operation:
+///
+///
+///$$ CDOTU \gets x^T * y = \sum_{i=1}^n x(i)*y(i) $$
+///
+///where x and y are real vectors, and $x^T$ is the transpose of
+///x.
+///
+///If $n \le 0$, CDOTU is set to 0.
+///
+/// # Argument
+///
+/// * `n`(in) - Number of elements in each vector.
+///
+/// * `x`(in) - Array  of dimension $(n-1) * |inc_x| + 1$.  Array x contains the first vector operand.
+///
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `y`(in) - array of dimension $(n-1) * |inc_y| + 1$.  Array y contains the second vector operand.
+///
+/// * `inc_y`(in) - Increment between elements of y.  If inc_y = 0, the results will be unpredictable.
+///
+
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern "C" fn cblas_cdotu(
+    n: BlasInt,
+    x: *const f32,
+    inc_x: BlasInt,
+    y: *const f32,
+    inc_y: BlasInt,
+) -> Complex32 {
+    common::cz_dotu(n, x, inc_x, y, inc_y)
 }

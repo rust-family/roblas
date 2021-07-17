@@ -63,25 +63,25 @@
 //!
 //! This is a list of c-functions:
 //! - [x] CROTG - setup Givens rotation
-//! 
+//!
 //! - [x] CSROT - apply Givens rotation
-//! 
+//!
 //! - [x] CSWAP - swap x and y
-//! 
+//!
 //! - [x] CSCAL - x = a*x
-//! 
+//!
 //! - [x] CSSCAL - x = a*x
-//! 
+//!
 //! - [x] CCOPY - copy x into y
-//! 
+//!
 //! - [x] CAXPY - y = a*x + y
-//! 
-//! - [ ] CDOTU - dot product
-//! 
+//!
+//! - [x] CDOTU - dot product
+//!
 //! - [ ] CDOTC - dot product, conjugating the first vector
-//! 
+//!
 //! - [ ] SCASUM - sum of absolute values
-//! 
+//!
 //! - [ ] ICAMAX - index of max abs value
 //!
 //! - [ ] ICAMIN - index of min abs value

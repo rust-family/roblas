@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod c_test {
-    use roblas::level1::*;
     use roblas::common::{BlasInt, Complex32};
+    use roblas::level1::*;
 
     #[test]
     fn cswap1() {
@@ -16,21 +16,43 @@ mod c_test {
 
     #[test]
     fn cscal1() {
-        let mut v1 = vec![Complex32::from(1_f32), Complex32::from(2_f32), Complex32::from(3_f32)];
+        let mut v1 = vec![
+            Complex32::from(1_f32),
+            Complex32::from(2_f32),
+            Complex32::from(3_f32),
+        ];
         let a = Complex32::from(2_f32);
         unsafe {
             cblas_cscal(v1.len() as BlasInt, &a, v1.as_mut_ptr(), 1);
         }
-        assert_eq!(v1, vec![Complex32::from(2_f32), Complex32::from(4_f32), Complex32::from(6_f32)]);
+        assert_eq!(
+            v1,
+            vec![
+                Complex32::from(2_f32),
+                Complex32::from(4_f32),
+                Complex32::from(6_f32)
+            ]
+        );
     }
 
     #[test]
     fn csscal1() {
-        let mut v1 = vec![Complex32::from(1_f32), Complex32::from(2_f32), Complex32::from(3_f32)];
+        let mut v1 = vec![
+            Complex32::from(1_f32),
+            Complex32::from(2_f32),
+            Complex32::from(3_f32),
+        ];
         unsafe {
             cblas_csscal(v1.len() as BlasInt, 2_f32, v1.as_mut_ptr(), 1);
         }
-        assert_eq!(v1, vec![Complex32::from(2_f32), Complex32::from(4_f32), Complex32::from(6_f32)]);
+        assert_eq!(
+            v1,
+            vec![
+                Complex32::from(2_f32),
+                Complex32::from(4_f32),
+                Complex32::from(6_f32)
+            ]
+        );
     }
 
     #[test]

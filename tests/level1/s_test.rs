@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod s_test {
-    use roblas::level1::*;
     use roblas::common::BlasInt;
+    use roblas::level1::*;
 
     #[test]
     fn srotg1() {
@@ -94,12 +94,19 @@ mod s_test {
             cblas_saxpy(3, 0.5_f32, v1.as_ptr(), 1, v2.as_mut_ptr(), 1);
         }
         assert_eq!(v2, vec![2.5_f32, 4_f32, 5.5_f32]);
-        let v3 = vec![1_f32, 2_f32, 3_f32, 1_f32, 2_f32, 3_f32, 1_f32, 2_f32, 3_f32];
-        let mut v4 = vec![2_f32, 3_f32, 4_f32, 2_f32, 3_f32, 4_f32, 2_f32, 3_f32, 4_f32];
+        let v3 = vec![
+            1_f32, 2_f32, 3_f32, 1_f32, 2_f32, 3_f32, 1_f32, 2_f32, 3_f32,
+        ];
+        let mut v4 = vec![
+            2_f32, 3_f32, 4_f32, 2_f32, 3_f32, 4_f32, 2_f32, 3_f32, 4_f32,
+        ];
         unsafe {
             cblas_saxpy(9, 0.5_f32, v3.as_ptr(), 1, v4.as_mut_ptr(), 1);
         }
-        assert_eq!(v4, vec![2.5_f32, 4_f32, 5.5_f32, 2.5_f32, 4_f32, 5.5_f32, 2.5_f32, 4_f32, 5.5_f32]);
+        assert_eq!(
+            v4,
+            vec![2.5_f32, 4_f32, 5.5_f32, 2.5_f32, 4_f32, 5.5_f32, 2.5_f32, 4_f32, 5.5_f32]
+        );
     }
 
     #[test]
@@ -111,15 +118,17 @@ mod s_test {
         }
         assert_eq!(result, 30_f32);
         // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
-        let v2 = vec![1_f32, 2_f32, 3_f32, 4_f32, 5_f32,
-                                1_f32, 2_f32, 3_f32, 4_f32, 5_f32];
+        let v2 = vec![
+            1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 1_f32, 2_f32, 3_f32, 4_f32, 5_f32,
+        ];
         unsafe {
             result = cblas_sdot(10, v2.as_ptr(), 1, v2.as_ptr(), 1);
         }
         assert_eq!(result, 110_f32);
-        let v3 = vec![1_f32, 2_f32, 3_f32, 4_f32, 5_f32,
-                                1_f32, 2_f32, 3_f32, 4_f32, 5_f32,
-                                1_f32, 2_f32, 3_f32,];
+        let v3 = vec![
+            1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 1_f32, 2_f32, 3_f32, 4_f32, 5_f32, 1_f32, 2_f32,
+            3_f32,
+        ];
         unsafe {
             result = cblas_sdot(13, v3.as_ptr(), 1, v3.as_ptr(), 1);
         }

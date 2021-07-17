@@ -1,5 +1,5 @@
-use crate::common::{BlasInt, BlasIndex};
 use super::common;
+use crate::common::{BlasIndex, BlasInt};
 
 /// SROTG construct givens plane rotation.
 ///
@@ -50,7 +50,7 @@ use super::common;
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_srotg(a: *mut f32, b: *mut f32, c: *mut f32, s: *mut f32) {
+pub unsafe extern "C" fn cblas_srotg(a: *mut f32, b: *mut f32, c: *mut f32, s: *mut f32) {
     common::sd_rotg(a, b, c, s);
 }
 
@@ -98,7 +98,13 @@ pub unsafe extern fn cblas_srotg(a: *mut f32, b: *mut f32, c: *mut f32, s: *mut 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: f32, params: *mut f32) {
+pub unsafe extern "C" fn cblas_srotmg(
+    d1: *mut f32,
+    d2: *mut f32,
+    b1: *mut f32,
+    b2: f32,
+    params: *mut f32,
+) {
     common::sd_rotmg(d1, d2, b1, b2, params);
 }
 
@@ -130,7 +136,15 @@ pub unsafe extern fn cblas_srotmg(d1: *mut f32, d2: *mut f32, b1: *mut f32, b2: 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_srot(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt, c: f32, s: f32) {
+pub unsafe extern "C" fn cblas_srot(
+    n: BlasInt,
+    x: *mut f32,
+    inc_x: BlasInt,
+    y: *mut f32,
+    inc_y: BlasInt,
+    c: f32,
+    s: f32,
+) {
     common::sd_rot(n, x, inc_x, y, inc_y, c, s);
 }
 
@@ -169,7 +183,14 @@ pub unsafe extern fn cblas_srot(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_srotm(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt, param: *const f32) {
+pub unsafe extern "C" fn cblas_srotm(
+    n: BlasInt,
+    x: *mut f32,
+    inc_x: BlasInt,
+    y: *mut f32,
+    inc_y: BlasInt,
+    param: *const f32,
+) {
     common::sd_rotm(n, x, inc_x, y, inc_y, param);
 }
 
@@ -199,7 +220,13 @@ pub unsafe extern fn cblas_srotm(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mu
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_sswap(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt) {
+pub unsafe extern "C" fn cblas_sswap(
+    n: BlasInt,
+    x: *mut f32,
+    inc_x: BlasInt,
+    y: *mut f32,
+    inc_y: BlasInt,
+) {
     common::a_swap(n, x, inc_x, y, inc_y);
 }
 
@@ -225,7 +252,7 @@ pub unsafe extern fn cblas_sswap(n: BlasInt, x: *mut f32, inc_x: BlasInt, y: *mu
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_sscal(n: BlasInt, alpha: f32, x: *mut f32, inc_x: BlasInt) {
+pub unsafe extern "C" fn cblas_sscal(n: BlasInt, alpha: f32, x: *mut f32, inc_x: BlasInt) {
     common::sd_scal(n, alpha, x, inc_x);
 }
 
@@ -250,10 +277,15 @@ pub unsafe extern fn cblas_sscal(n: BlasInt, alpha: f32, x: *mut f32, inc_x: Bla
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_scopy(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt) {
+pub unsafe extern "C" fn cblas_scopy(
+    n: BlasInt,
+    x: *const f32,
+    inc_x: BlasInt,
+    y: *mut f32,
+    inc_y: BlasInt,
+) {
     common::a_copy(n, x, inc_x, y, inc_y);
 }
-
 
 /// SAXPY adds a scalar multiple of a real vector to another real vector.
 ///
@@ -287,7 +319,14 @@ pub unsafe extern fn cblas_scopy(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_saxpy(n: BlasInt, a: f32, x: *const f32, inc_x: BlasInt, y: *mut f32, inc_y: BlasInt) {
+pub unsafe extern "C" fn cblas_saxpy(
+    n: BlasInt,
+    a: f32,
+    x: *const f32,
+    inc_x: BlasInt,
+    y: *mut f32,
+    inc_y: BlasInt,
+) {
     common::a_axpy(n, a, x, inc_x, y, inc_y);
 }
 
@@ -317,7 +356,13 @@ pub unsafe extern fn cblas_saxpy(n: BlasInt, a: f32, x: *const f32, inc_x: BlasI
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_sdot(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *const f32, inc_y: BlasInt) -> f32 {
+pub unsafe extern "C" fn cblas_sdot(
+    n: BlasInt,
+    x: *const f32,
+    inc_x: BlasInt,
+    y: *const f32,
+    inc_y: BlasInt,
+) -> f32 {
     common::sd_sdot(n, x, inc_x, y, inc_y)
 }
 
@@ -354,9 +399,18 @@ pub unsafe extern fn cblas_sdot(n: BlasInt, x: *const f32, inc_x: BlasInt, y: *c
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_sdsdot(n: BlasInt, sb: f32, x: *const f32, inc_x: BlasInt, y: *const f32, inc_y: BlasInt) -> f32 {
+pub unsafe extern "C" fn cblas_sdsdot(
+    n: BlasInt,
+    sb: f32,
+    x: *const f32,
+    inc_x: BlasInt,
+    y: *const f32,
+    inc_y: BlasInt,
+) -> f32 {
     let mut stemp: f64 = sb as f64;
-    if n <= 0 { return sb; }
+    if n <= 0 {
+        return sb;
+    }
     if inc_x == 1 && inc_y == 1 {
         let m = n % 5;
         for i in 0..m as usize {
@@ -367,11 +421,11 @@ pub unsafe extern fn cblas_sdsdot(n: BlasInt, sb: f32, x: *const f32, inc_x: Bla
         }
         let mp1 = m as usize;
         for i in (mp1..(n as usize)).step_by(5) {
-            stemp += *x.add(i) as f64 * *y.add(i) as f64 +
-                *x.add(i+1) as f64 * *y.add(i+1) as f64 +
-                *x.add(i+2) as f64 * *y.add(i+2) as f64 +
-                *x.add(i+3) as f64 * *y.add(i+3) as f64 +
-                *x.add(i+4) as f64 * *y.add(i+4) as f64;
+            stemp += *x.add(i) as f64 * *y.add(i) as f64
+                + *x.add(i + 1) as f64 * *y.add(i + 1) as f64
+                + *x.add(i + 2) as f64 * *y.add(i + 2) as f64
+                + *x.add(i + 3) as f64 * *y.add(i + 3) as f64
+                + *x.add(i + 4) as f64 * *y.add(i + 4) as f64;
         }
     } else {
         let mut ix = 0_usize;
@@ -409,7 +463,7 @@ pub unsafe extern fn cblas_sdsdot(n: BlasInt, sb: f32, x: *const f32, inc_x: Bla
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_sasum(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f32 {
+pub unsafe extern "C" fn cblas_sasum(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f32 {
     common::sd_asum(n, x, inc_x)
 }
 
@@ -433,7 +487,7 @@ pub unsafe extern fn cblas_sasum(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_snrm2(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f32 {
+pub unsafe extern "C" fn cblas_snrm2(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f32 {
     common::sd_nrm2(n, x, inc_x)
 }
 
@@ -464,7 +518,7 @@ pub unsafe extern fn cblas_snrm2(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f
 /// The returned index start from 0.
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_isamax(n: BlasInt, x: *const f32, inc_x: BlasInt) -> BlasIndex {
+pub unsafe extern "C" fn cblas_isamax(n: BlasInt, x: *const f32, inc_x: BlasInt) -> BlasIndex {
     common::sd_iamax(n, x, inc_x)
 }
 
@@ -496,6 +550,6 @@ pub unsafe extern fn cblas_isamax(n: BlasInt, x: *const f32, inc_x: BlasInt) -> 
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern fn cblas_isamin(n: BlasInt, x: *const f32, inc_x: BlasInt) -> BlasIndex {
+pub unsafe extern "C" fn cblas_isamin(n: BlasInt, x: *const f32, inc_x: BlasInt) -> BlasIndex {
     common::sd_iamin(n, x, inc_x)
 }

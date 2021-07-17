@@ -1,8 +1,8 @@
-mod s;
-mod d;
 mod c;
 mod common;
+mod d;
+mod s;
 
-pub use s::*;
-pub use d::*;
 pub use c::*;
+pub use d::*;
+pub use s::*;
