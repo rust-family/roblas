@@ -222,15 +222,15 @@ pub unsafe fn sd_rot<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y:
             *x.add(i) = stemp;
         }
     } else {
-        let mut ix = 1_usize;
-        let mut iy = 1_usize;
+        let mut ix = 0_usize;
+        let mut iy = 0_usize;
         if inc_x < 0 {
-            ix = ((1 - n) * inc_x + 1) as usize;
+            ix = ((1 - n) * inc_x) as usize;
         }
         if inc_y < 0 {
-            iy = ((1 - n) * inc_y + 1) as usize;
+            iy = ((1 - n) * inc_y) as usize;
         }
-        for _ in 1..n {
+        for _ in 0..n {
             let stemp = c * *x.add(ix) + s * *y.add(iy);
             *y.add(iy) = c * *y.add(iy) - s * *x.add(ix);
             *x.add(ix) = stemp;
@@ -284,13 +284,13 @@ pub unsafe fn sd_rotm<T>(n: BlasInt, x: *mut T, inc_x: BlasInt, y: *mut T, inc_y
             }
         }
     } else {
-        let mut kx = 1_usize;
-        let mut ky = 1_usize;
+        let mut kx = 0_usize;
+        let mut ky = 0_usize;
         if inc_x < 0 {
-            kx = (1 + (1 - n) * inc_x) as usize;
+            kx = ((1 - n) * inc_x) as usize;
         }
         if inc_y < 0 {
-            ky = (1 + (1 - n) * inc_y) as usize;
+            ky = ((1 - n) * inc_y) as usize;
         }
         if flag < zero {
             let sh11 = *param.add(1);
