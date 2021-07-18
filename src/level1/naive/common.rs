@@ -485,9 +485,9 @@ pub unsafe fn cz_axpy<T>(
 #[inline(always)]
 pub unsafe fn cz_dotu<T>(
     n: BlasInt,
-    cx: *const T,
+    cx: *const Complex<T>,
     inc_x: BlasInt,
-    cy: *const T,
+    cy: *const Complex<T>,
     inc_y: BlasInt,
 ) -> Complex<T>
 where
@@ -513,6 +513,45 @@ where
         }
         for _ in 0_usize..n as usize {
             ctemp = ctemp + (*cx.add(ix as usize)) * (*cy.add(iy as usize));
+            ix = ix + inc_x;
+            iy = iy + inc_y;
+        }
+    }
+    ctemp
+}
+
+#[inline(always)]
+pub unsafe fn cz_dotc<T>(
+    n: BlasInt,
+    cx: *const Complex<T>,
+    inc_x: BlasInt,
+    cy: *const Complex<T>,
+    inc_y: BlasInt,
+) -> Complex<T> 
+where 
+    T: Clone + Num + Signed + Float + From<i8> + Neg + Mul<Output = T>,
+{
+    let zero = From::from(0);
+    let mut ctemp = Complex::new(zero, zero);
+    if n < 0 {
+        return ctemp;
+    }
+    if inc_x == 1 && inc_y == 1 {
+        for i in 0_usize..n as usize {
+            ctemp = ctemp + (*cx.add(i)).conj() * (*cy.add(i));
+        }
+    }
+    else {
+        let mut ix = 1;
+        let mut iy = 1;
+        if inc_x < 0 {
+            ix = -inc_x * (n - 1) + 1;
+        }
+        if inc_y < 0 {
+            iy = -inc_y * (n - 1) + 1;
+        }
+        for _ in 0_usize..n as usize {
+            ctemp = ctemp + (*cx.add(ix as usize)).conj() * (*cy.add(iy as usize));
             ix = ix + inc_x;
             iy = iy + inc_y;
         }

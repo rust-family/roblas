@@ -284,7 +284,7 @@ pub unsafe extern "C" fn cblas_caxpy(
 ///
 /// This routine performs the following vector operation:
 ///
-/// $$ CDOTU \gets x^T * y = \sum_{i=1}^n x(i)*y(i) $$
+/// $$ CDOTU \gets x^T * y = \sum_{i=0}^{n-1} x(i)*y(i) $$
 ///
 /// where x and y are real vectors, and $x^T$ is the transpose of x.
 ///
@@ -307,10 +307,55 @@ pub unsafe extern "C" fn cblas_caxpy(
 #[inline(always)]
 pub unsafe extern "C" fn cblas_cdotu(
     n: BlasInt,
-    x: *const f32,
+    x: *const Complex32,
     inc_x: BlasInt,
-    y: *const f32,
+    y: *const Complex32,
     inc_y: BlasInt,
 ) -> Complex32 {
     common::cz_dotu(n, x, inc_x, y, inc_y)
+}
+
+/// CDOTC forms the dot product of two complex vectors
+/// 
+/// # Description
+/// 
+///  CDOTC computes a dot product of the conjugate of a complex  vector  and
+/// another complex vector (l complex inner product).
+/// 2
+/// 
+/// CDOTC computes a dot product of the conjugate of a complex  vector  and
+/// another complex vector (l complex inner product).
+/// 2
+/// 
+/// This routine performs the following vector operation:
+/// 
+/// $$     CDOTC  \gets  x^H * y = \sum_{i=0}^{n-1} \bar{x(i)}*y(i) $$
+/// where x and y are complex vectors, and $x^H$ is the conjugate
+/// transpose of x.
+///
+/// If n <= 0, CDOTC is set to 0.
+/// 
+/// # Argument
+///
+/// * `n`(in) - Number of elements in each vector.
+///
+/// * `x`(in) - Array  of dimension $(n-1) * |inc_x| + 1$.  Array x contains the first vector operand.
+///
+/// * `inc_x`(in) - Increment between elements of x. If inc_x = 0, the results will be unpredictable.
+///
+/// * `y`(in) - array of dimension $(n-1) * |inc_y| + 1$.  Array y contains the second vector operand.
+///
+/// * `inc_y`(in) - Increment between elements of y.  If inc_y = 0, the results will be unpredictable.
+///
+
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern "C" fn cblas_cdotc(
+    n: BlasInt,
+    cx: *const Complex32,
+    inc_x: BlasInt,
+    cy: *const Complex32,
+    inc_y: BlasInt,
+) -> Complex32 {
+    common::cz_dotc(n, cx, inc_x, cy, inc_y)
 }
