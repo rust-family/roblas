@@ -527,8 +527,8 @@ pub unsafe fn cz_dotc<T>(
     inc_x: BlasInt,
     cy: *const Complex<T>,
     inc_y: BlasInt,
-) -> Complex<T> 
-where 
+) -> Complex<T>
+where
     T: Clone + Num + Signed + Float + From<i8> + Neg + Mul<Output = T>,
 {
     let zero = From::from(0);
@@ -540,8 +540,7 @@ where
         for i in 0_usize..n as usize {
             ctemp = ctemp + (*cx.add(i)).conj() * (*cy.add(i));
         }
-    }
-    else {
+    } else {
         let mut ix = 1;
         let mut iy = 1;
         if inc_x < 0 {

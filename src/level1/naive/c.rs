@@ -316,25 +316,21 @@ pub unsafe extern "C" fn cblas_cdotu(
 }
 
 /// CDOTC forms the dot product of two complex vectors
-/// 
+///
 /// # Description
-/// 
-///  CDOTC computes a dot product of the conjugate of a complex  vector  and
-/// another complex vector (l complex inner product).
-/// 2
-/// 
+///
 /// CDOTC computes a dot product of the conjugate of a complex  vector  and
 /// another complex vector (l complex inner product).
-/// 2
-/// 
+///
 /// This routine performs the following vector operation:
-/// 
-/// $$     CDOTC  \gets  x^H * y = \sum_{i=0}^{n-1} \bar{x(i)}*y(i) $$
+///
+/// $$ CDOTC  \gets  x^H * y = \sum_{i=0}^{n-1} \bar{x(i)}*y(i) $$
+///
 /// where x and y are complex vectors, and $x^H$ is the conjugate
 /// transpose of x.
 ///
 /// If n <= 0, CDOTC is set to 0.
-/// 
+///
 /// # Argument
 ///
 /// * `n`(in) - Number of elements in each vector.
