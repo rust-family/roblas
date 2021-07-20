@@ -355,3 +355,28 @@ pub unsafe extern "C" fn cblas_cdotc(
 ) -> Complex32 {
     common::cz_dotc(n, cx, inc_x, cy, inc_y)
 }
+
+/// SCASUM takes the sum of the $(|Re(.)| + |Im(.)|)$'s of a complex vector and
+/// returns a single precision result.
+/// 
+/// # Description
+/// This routine performs the following vector operation:
+/// 
+/// $$ SCASUM \gets \sum_{i=0}^{n-1} abs(real(x(i))) + abs(aimag(x(i))) $$
+/// 
+/// # Argument
+/// * `n`(in) - Number of vector elements to be summed.
+/// 
+/// * `x`(in) - Array of dimension $(n-1) * abs(inc_x) + 1$. Vector that contains elements to be summed.
+/// 
+/// * `inc_x`(in) - Increment between elements of x. If $inc_x = 0$, the results will be unpredictable.
+/// 
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern "C" fn cblas_scasum(
+    n: BlasInt, 
+    cx: *const Complex32, 
+    inc_x: BlasInt 
+) -> f32 {
+    common::cz_scasum(n, cx, inc_x)
+}

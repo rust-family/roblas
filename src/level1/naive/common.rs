@@ -454,7 +454,7 @@ pub unsafe fn cz_axpy<T>(
 ) where
     T: Float + From<i8> + Signed + Mul<Output = T>,
 {
-    if n < 0 {
+    if n <= 0 {
         return;
     }
     if (*ca).l1_norm() == From::from(0) {
@@ -495,7 +495,7 @@ where
 {
     let zero = From::from(0);
     let mut ctemp = Complex::new(zero, zero);
-    if n < 0 {
+    if n <= 0 {
         return ctemp;
     }
     if inc_x == 0 && inc_y == 1 {
@@ -533,7 +533,7 @@ where
 {
     let zero = From::from(0);
     let mut ctemp = Complex::new(zero, zero);
-    if n < 0 {
+    if n <= 0 {
         return ctemp;
     }
     if inc_x == 1 && inc_y == 1 {
@@ -556,6 +556,32 @@ where
         }
     }
     ctemp
+}
+
+#[inline(always)]
+pub unsafe fn cz_scasum<T>(n: BlasInt, cx: *const Complex<T>, inc_x: BlasInt) -> T
+where
+    T: Copy + From<i8> + PartialEq + Mul<Output = T> + Add<Output = T> + AddAssign + Signed,
+{
+    let mut scasum = From::from(0);
+    let mut stemp = From::from(0);
+    if n <= 0 || inc_x <= 0 {
+        return scasum;
+    }
+    if inc_x == 1 {
+        for i in 0_usize..n as usize {
+            stemp = stemp + (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
+        }
+    } else {
+        let ninc_x = n * inc_x;
+        for i in 0_usize..ninc_x as usize {
+            if i % inc_x as usize == 0 {
+                stemp = stemp + (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
+            }
+        }
+    }
+    scasum = stemp;
+    scasum
 }
 
 #[inline(always)]

@@ -78,9 +78,9 @@
 //!
 //! - [x] CDOTU - dot product
 //!
-//! - [ ] CDOTC - dot product, conjugating the first vector
+//! - [x] CDOTC - dot product, conjugating the first vector
 //!
-//! - [ ] SCASUM - sum of absolute values
+//! - [x] SCASUM - sum of absolute values
 //!
 //! - [ ] ICAMAX - index of max abs value
 //!
