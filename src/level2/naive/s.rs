@@ -10,6 +10,8 @@ use crate::common::{CBlasOrder, CBlasTranspose, BlasInt};
 /// $$\vec{y}=\alpha * \boldsymbol{A}^T * \vec{x} + \beta * \vec{y}$$
 ///
 /// # Arguments
+/// TODO
+///
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_sgemv(

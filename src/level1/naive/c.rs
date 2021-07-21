@@ -319,7 +319,7 @@ pub unsafe extern "C" fn cblas_cdotu(
 ///
 /// # Description
 ///
-/// CDOTC computes a dot product of the conjugate of a complex  vector  and
+/// CDOTC computes a dot product of the conjugate of a complex vector and
 /// another complex vector (l complex inner product).
 ///
 /// This routine performs the following vector operation:

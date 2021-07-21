@@ -1,11 +1,11 @@
 use super::common;
 use crate::common::{BlasInt, Complex64, BlasIndex};
 
-/// CROTG construct givens plane rotation.
+/// ZROTG construct givens plane rotation.
 ///
 /// # Description
 ///
-/// CROTG computes the elements of a rotation matrix such that:
+/// ZROTG computes the elements of a rotation matrix such that:
 ///
 /// $$
 ///     \left [  \begin{matrix}
@@ -64,10 +64,10 @@ pub unsafe extern "C" fn cblas_zrotg(
     common::cz_rotg(a, b, c, s);
 }
 
-/// CSROT performs rotation of points in the plane.
+/// ZSROT performs rotation of points in the plane.
 ///
 /// # Description
-/// CSROT applies a plane rotation, where the cos and sin (C and S) is real and the vectors X and Y are complex.
+/// ZSROT applies a plane rotation, where the cos and sin (C and S) is real and the vectors X and Y are complex.
 ///
 /// # Arguments
 /// * `n`(in) - The number of elements in the vectors X and Y.
@@ -87,7 +87,7 @@ pub unsafe extern "C" fn cblas_zrotg(
 /// * `c`(in) - Cosine of the angle of rotation.
 ///
 /// * `s`(in) - Sine of the angle of rotation.
-/// C and S define a rotation:
+/// Z and S define a rotation:
 /// $$
 ///     \left [ \begin{matrix}
 ///         c & s \\\\
@@ -110,10 +110,10 @@ pub unsafe extern "C" fn cblas_zsrot(
     common::cz_srot(n, x, inc_x, y, inc_y, c, s);
 }
 
-/// CSWAP interchanges two complex vectors.
+/// ZSWAP interchanges two complex vectors.
 ///
 /// # Description
-/// CSWAP  swaps two complex vectors, it interchanges n values of vector x and
+/// ZSWAP  swaps two complex vectors, it interchanges n values of vector x and
 /// vector y.  incx and incy specify the increment between two consecutive
 /// elements of respectively vector x and y.
 ///
@@ -146,10 +146,10 @@ pub unsafe extern "C" fn cblas_zswap(
     common::a_swap(n, x, inc_x, y, inc_y);
 }
 
-/// CSCAL scales a complex vector by a complex constant.
+/// ZSCAL scales a complex vector by a complex constant.
 ///
 /// # Description
-/// CSCAL scales a complex vector with a complex scalar.  CSCAL scales the vector
+/// ZSCAL scales a complex vector with a complex scalar.  CSCAL scales the vector
 /// x of length n and increment inc_x by the constant $\alpha$.
 ///
 /// Ths routine performs the following vector operation:
@@ -177,10 +177,10 @@ pub unsafe extern "C" fn cblas_zscal(
     common::cz_scal(n, p_alpha, x, inc_x);
 }
 
-/// CSSCAL scales a complex vector by a real constant.
+/// ZSSCAL scales a complex vector by a real constant.
 ///
 /// # Description
-/// CSSCAL scales a complex vector with a real scalar. CSSCAL scales the vector
+/// ZSSCAL scales a complex vector with a real scalar. CSSCAL scales the vector
 /// x of length n and increment inc_x by the constant $\alpha$.
 ///
 /// Ths routine performs the following vector operation:
@@ -203,7 +203,7 @@ pub unsafe extern "C" fn cblas_zsscal(n: BlasInt, alpha: f64, x: *mut Complex64,
     common::cz_sscal(n, alpha, x, inc_x);
 }
 
-/// CCOPY copies a vector, x, to a vector, y.
+/// ZCOPY copies a vector, x, to a vector, y.
 ///
 /// # Description
 /// The copy routines copy one vector to another:
@@ -234,14 +234,14 @@ pub unsafe extern "C" fn cblas_zcopy(
     common::a_copy(n, x, inc_x, y, inc_y);
 }
 
-/// CAXPY constant times a vector plus a vector.
+/// ZAXPY constant times a vector plus a vector.
 ///
 /// # Description
 ///
-/// CAXPY  adds  a  scalar multiple of a complex vector to another complex
+/// ZAXPY  adds  a  scalar multiple of a complex vector to another complex
 /// vector.
 ///
-/// CAXPY computes a constant alpha times a vector x plus a vector y.   The
+/// ZAXPY computes a constant alpha times a vector x plus a vector y.   The
 /// result overwrites the initial values of vector y.
 ///
 /// This routine performs the following vector operation:
@@ -276,19 +276,19 @@ pub unsafe extern "C" fn cblas_zaxpy(
     common::cz_axpy(n, a, x, inc_x, y, inc_y);
 }
 
-/// CDOTU forms the dot product of two complex vectors
+/// ZDOTU forms the dot product of two complex vectors
 ///
 /// # Description
 ///
-/// CDOTU computes a dot product of two complex vectors.
+/// ZDOTU computes a dot product of two complex vectors.
 ///
 /// This routine performs the following vector operation:
 ///
-/// $$ CDOTU \gets x^T * y = \sum_{i=0}^{n-1} x(i)*y(i) $$
+/// $$ ZDOTU \gets x^T * y = \sum_{i=0}^{n-1} x(i)*y(i) $$
 ///
 /// where x and y are real vectors, and $x^T$ is the transpose of x.
 ///
-/// If $n \le 0$, CDOTU is set to 0.
+/// If $n \le 0$, ZDOTU is set to 0.
 ///
 /// # Argument
 ///
@@ -315,21 +315,21 @@ pub unsafe extern "C" fn cblas_zdotu(
     common::cz_dotu(n, x, inc_x, y, inc_y)
 }
 
-/// CDOTC forms the dot product of two complex vectors
+/// ZDOTC forms the dot product of two complex vectors
 ///
 /// # Description
 ///
-/// CDOTC computes a dot product of the conjugate of a complex  vector  and
+/// ZDOTC computes a dot product of the conjugate of a complex vector and
 /// another complex vector (l complex inner product).
 ///
 /// This routine performs the following vector operation:
 ///
-/// $$ CDOTC  \gets  x^H * y = \sum_{i=0}^{n-1} \bar{x(i)}*y(i) $$
+/// $$ ZDOTC  \gets  x^H * y = \sum_{i=0}^{n-1} \bar{x(i)}*y(i) $$
 ///
 /// where x and y are complex vectors, and $x^H$ is the conjugate
 /// transpose of x.
 ///
-/// If n <= 0, CDOTC is set to 0.
+/// If n <= 0, ZDOTC is set to 0.
 ///
 /// # Argument
 ///
@@ -356,13 +356,13 @@ pub unsafe extern "C" fn cblas_zdotc(
     common::cz_dotc(n, cx, inc_x, cy, inc_y)
 }
 
-/// SCASUM takes the sum of the $(|Re(.)| + |Im(.)|)$'s of a complex vector and
+/// DZASUM takes the sum of the $(|Re(.)| + |Im(.)|)$'s of a complex vector and
 /// returns a single precision result.
 /// 
 /// # Description
 /// This routine performs the following vector operation:
 /// 
-/// $$ SCASUM \gets \sum_{i=0}^{n-1} abs(real(x(i))) + abs(aimag(x(i))) $$
+/// $$ DZASUM \gets \sum_{i=0}^{n-1} abs(real(x(i))) + abs(aimag(x(i))) $$
 /// 
 /// # Argument
 /// * `n`(in) - Number of vector elements to be summed.
@@ -373,7 +373,7 @@ pub unsafe extern "C" fn cblas_zdotc(
 /// 
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_szasum(
+pub unsafe extern "C" fn cblas_dzasum(
     n: BlasInt, 
     cx: *const Complex64, 
     inc_x: BlasInt 
@@ -381,12 +381,12 @@ pub unsafe extern "C" fn cblas_szasum(
     common::cz_asum(n, cx, inc_x)
 }
 
-/// ICAMAX finds the index of the first element having maximum $|Re(.)| + |Im(.)|$
+/// IZAMAX finds the index of the first element having maximum $|Re(.)| + |Im(.)|$
 /// 
 /// # Description
-/// CAMAX  searches a complex vector for the first occurrence of the maximum absolute value.
+/// ZAMAX  searches a complex vector for the first occurrence of the maximum absolute value.
 ///
-/// ICAMAX determines the first index $i$ such that
+/// IZAMAX determines the first index $i$ such that
 /// 
 /// $$|Real(x_i)|+ |Imag(x_i) | = MAX(|Real(x_j)| + | Imag(x_j)|): j = 1, ..., n $$
 /// 
@@ -409,12 +409,12 @@ pub unsafe extern "C" fn cblas_izamax(
     common::cz_iamax(n, cx, inc_x)
 }
 
-/// ICAMIN finds the index of the first element having minimum $|Re(.)| + |Im(.)|$
+/// IZAMIN finds the index of the first element having minimum $|Re(.)| + |Im(.)|$
 /// 
 /// # Description
-/// CAMIN  searches a complex vector for the first occurrence of the minimum absolute value.
+/// ZAMIN  searches a complex vector for the first occurrence of the minimum absolute value.
 ///
-/// ICAMIN determines the first index $i$ such that
+/// IZAMIN determines the first index $i$ such that
 /// 
 /// $$|Real(x_i)|+ |Imag(x_i) | = MIN(|Real(x_j)| + | Imag(x_j)|): j = 1, ..., n $$
 /// 

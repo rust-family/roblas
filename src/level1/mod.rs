@@ -24,6 +24,8 @@
 //!
 //! - [x] SNRM2 - Euclidean norm
 //!
+//! - [ ] SSUM - sum of values(**not included in blas**), should not be implemented now
+//!
 //! - [x] SASUM - sum of absolute values
 //!
 //! - [x] ISAMAX - index of max abs value
@@ -53,7 +55,7 @@
 //!
 //! - [x] DNRM2 - Euclidean norm
 //!
-//! - [x] DZNRM2 - Euclidean norm
+//! - [ ] DSUM - sum of values(**not included in blas**), should not be implemented now
 //!
 //! - [x] DASUM - sum of absolute values
 //!
@@ -80,11 +82,44 @@
 //!
 //! - [x] CDOTC - dot product, conjugating the first vector
 //!
+//! - [ ] SCNRM2 - Euclidean norm
+//!
+//! - [ ] SCSUM - sum of values(**not included in blas**), should not be implemented now
+//!
 //! - [x] SCASUM - sum of absolute values
 //!
 //! - [x] ICAMAX - index of max abs value
 //!
 //! - [x] ICAMIN - index of min abs value
+//!
+//! This is a list of z-functions:
+//! - [x] ZROTG - setup Givens rotation
+//!
+//! - [x] ZSROT - apply Givens rotation
+//!
+//! - [x] ZSWAP - swap x and y
+//!
+//! - [x] ZSCAL - x = a*x
+//!
+//! - [x] ZSSCAL - x = a*x
+//!
+//! - [x] ZCOPY - copy x into y
+//!
+//! - [x] ZAXPY - y = a*x + y
+//!
+//! - [x] ZDOTU - dot product
+//!
+//! - [x] ZDOTC - dot product, conjugating the first vector
+//!
+//! - [ ] DZNRM2 - Euclidean norm
+//!
+//! - [ ] DZSUM - sum of values(**not included in blas**), should not be implemented now
+//!
+//! - [x] DZASUM - sum of absolute values
+//!
+//! - [x] IZAMAX - index of max abs value
+//!
+//! - [x] IZAMIN - index of min abs value
 
 mod naive;
 pub use naive::*;
