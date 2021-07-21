@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod c_test {
+mod z_test {
     use roblas::common::{BlasInt, Complex64};
     use roblas::level1::*;
 
@@ -100,6 +100,18 @@ mod c_test {
             result = cblas_zdotc(2, v1.as_ptr(), 1, v2.as_ptr(), 1);
         }
         let expect = Complex64::new(7_f64, -3_f64);
+        assert_eq!(result, expect);
+        // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
+    }
+
+    #[test]
+    fn izamax() {
+        let v1 = vec![Complex64::new(1_f64, 1_f64), Complex64::new(1_f64, -2_f64)];
+        let result;
+        unsafe {
+            result = cblas_izamax(2, v1.as_ptr(), 1);
+        }
+        let expect = 1 as usize;
         assert_eq!(result, expect);
         // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
     }
