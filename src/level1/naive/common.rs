@@ -558,7 +558,7 @@ where
 }
 
 #[inline(always)]
-pub unsafe fn cz_scasum<T>(n: BlasInt, cx: *const Complex<T>, inc_x: BlasInt) -> T
+pub unsafe fn cz_asum<T>(n: BlasInt, cx: *const Complex<T>, inc_x: BlasInt) -> T
 where
     T: Copy + From<i8> + PartialEq + Mul<Output = T> + Add<Output = T> + AddAssign + Signed,
 {
@@ -581,6 +581,84 @@ where
     }
     scasum = stemp;
     scasum
+}
+
+#[inline(always)]
+pub unsafe fn cz_iamax<T>(n: BlasInt, cx: *const Complex<T>, inc_x: BlasInt) -> BlasIndex
+where 
+    T: Clone + Signed + From<i8> + PartialOrd,
+{
+    let mut icamax = 0;
+    if n < 1 || inc_x <= 0 {
+        return icamax;
+    }
+    icamax = 1;
+    if n == 1 {
+        return icamax;
+    }
+    if inc_x == 1 {
+        let mut smax = (*cx.add(1)).re.abs() + (*cx.add(1)).im.abs();
+        for i in 1_usize..n as usize {
+            let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
+            if tmp > smax {
+                icamax = i;
+                smax = tmp;
+            }
+        }
+    }
+    else {
+        let mut ix = 1;
+        let mut smax = (*cx.add(1)).re.abs() + (*cx.add(1)).im.abs();
+        ix = ix + inc_x;
+        for i in 1_usize..n as usize {
+            let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
+            if tmp > smax {
+                icamax = i;
+                smax = tmp;
+            }
+            ix = ix + inc_x;
+        }
+    }
+    icamax
+}
+
+#[inline(always)]
+pub unsafe fn cz_iamin<T>(n: BlasInt, cx: *const Complex<T>, inc_x: BlasInt) -> BlasIndex
+where 
+    T: Clone + Signed + From<i8> + PartialOrd,
+{
+    let mut icamin = 0;
+    if n < 1 || inc_x <= 0 {
+        return icamin;
+    }
+    icamin = 1;
+    if n == 1 {
+        return icamin;
+    }
+    if inc_x == 1 {
+        let mut smin = (*cx.add(1)).re.abs() + (*cx.add(1)).im.abs();
+        for i in 1_usize..n as usize {
+            let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
+            if tmp < smin {
+                icamin = i;
+                smin = tmp;
+            }
+        }
+    }
+    else {
+        let mut ix = 1;
+        let mut smin = (*cx.add(1)).re.abs() + (*cx.add(1)).im.abs();
+        ix = ix + inc_x;
+        for i in 1_usize..n as usize {
+            let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
+            if tmp < smin {
+                icamin = i;
+                smin = tmp;
+            }
+            ix = ix + inc_x;
+        }
+    }
+    icamin
 }
 
 #[inline(always)]

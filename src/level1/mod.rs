@@ -82,9 +82,9 @@
 //!
 //! - [x] SCASUM - sum of absolute values
 //!
-//! - [ ] ICAMAX - index of max abs value
+//! - [x] ICAMAX - index of max abs value
 //!
-//! - [ ] ICAMIN - index of min abs value
+//! - [x] ICAMIN - index of min abs value
 
 mod naive;
 pub use naive::*;

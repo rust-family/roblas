@@ -1,5 +1,5 @@
 use super::common;
-use crate::common::{BlasInt, Complex32, BlasIndex};
+use crate::common::{BlasInt, Complex64, BlasIndex};
 
 /// CROTG construct givens plane rotation.
 ///
@@ -55,11 +55,11 @@ use crate::common::{BlasInt, Complex32, BlasIndex};
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_crotg(
-    a: *mut Complex32,
-    b: *mut Complex32,
-    c: *mut f32,
-    s: *mut Complex32,
+pub unsafe extern "C" fn cblas_zrotg(
+    a: *mut Complex64,
+    b: *mut Complex64,
+    c: *mut f64,
+    s: *mut Complex64,
 ) {
     common::cz_rotg(a, b, c, s);
 }
@@ -98,14 +98,14 @@ pub unsafe extern "C" fn cblas_crotg(
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_csrot(
+pub unsafe extern "C" fn cblas_zsrot(
     n: BlasInt,
-    x: *mut Complex32,
+    x: *mut Complex64,
     inc_x: BlasInt,
-    y: *mut Complex32,
+    y: *mut Complex64,
     inc_y: BlasInt,
-    c: f32,
-    s: f32,
+    c: f64,
+    s: f64,
 ) {
     common::cz_srot(n, x, inc_x, y, inc_y, c, s);
 }
@@ -136,11 +136,11 @@ pub unsafe extern "C" fn cblas_csrot(
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_cswap(
+pub unsafe extern "C" fn cblas_zswap(
     n: BlasInt,
-    x: *mut Complex32,
+    x: *mut Complex64,
     inc_x: BlasInt,
-    y: *mut Complex32,
+    y: *mut Complex64,
     inc_y: BlasInt,
 ) {
     common::a_swap(n, x, inc_x, y, inc_y);
@@ -168,10 +168,10 @@ pub unsafe extern "C" fn cblas_cswap(
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_cscal(
+pub unsafe extern "C" fn cblas_zscal(
     n: BlasInt,
-    p_alpha: *const Complex32,
-    x: *mut Complex32,
+    p_alpha: *const Complex64,
+    x: *mut Complex64,
     inc_x: BlasInt,
 ) {
     common::cz_scal(n, p_alpha, x, inc_x);
@@ -199,7 +199,7 @@ pub unsafe extern "C" fn cblas_cscal(
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_csscal(n: BlasInt, alpha: f32, x: *mut Complex32, inc_x: BlasInt) {
+pub unsafe extern "C" fn cblas_zsscal(n: BlasInt, alpha: f64, x: *mut Complex64, inc_x: BlasInt) {
     common::cz_sscal(n, alpha, x, inc_x);
 }
 
@@ -224,11 +224,11 @@ pub unsafe extern "C" fn cblas_csscal(n: BlasInt, alpha: f32, x: *mut Complex32,
 ///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_ccopy(
+pub unsafe extern "C" fn cblas_zcopy(
     n: BlasInt,
-    x: *const Complex32,
+    x: *const Complex64,
     inc_x: BlasInt,
-    y: *mut Complex32,
+    y: *mut Complex64,
     inc_y: BlasInt,
 ) {
     common::a_copy(n, x, inc_x, y, inc_y);
@@ -265,12 +265,12 @@ pub unsafe extern "C" fn cblas_ccopy(
 
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_caxpy(
+pub unsafe extern "C" fn cblas_zaxpy(
     n: BlasInt,
-    a: *const Complex32,
-    x: *const Complex32,
+    a: *const Complex64,
+    x: *const Complex64,
     inc_x: BlasInt,
-    y: *mut Complex32,
+    y: *mut Complex64,
     inc_y: BlasInt,
 ) {
     common::cz_axpy(n, a, x, inc_x, y, inc_y);
@@ -305,13 +305,13 @@ pub unsafe extern "C" fn cblas_caxpy(
 
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_cdotu(
+pub unsafe extern "C" fn cblas_zdotu(
     n: BlasInt,
-    x: *const Complex32,
+    x: *const Complex64,
     inc_x: BlasInt,
-    y: *const Complex32,
+    y: *const Complex64,
     inc_y: BlasInt,
-) -> Complex32 {
+) -> Complex64 {
     common::cz_dotu(n, x, inc_x, y, inc_y)
 }
 
@@ -346,13 +346,13 @@ pub unsafe extern "C" fn cblas_cdotu(
 
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_cdotc(
+pub unsafe extern "C" fn cblas_zdotc(
     n: BlasInt,
-    cx: *const Complex32,
+    cx: *const Complex64,
     inc_x: BlasInt,
-    cy: *const Complex32,
+    cy: *const Complex64,
     inc_y: BlasInt,
-) -> Complex32 {
+) -> Complex64 {
     common::cz_dotc(n, cx, inc_x, cy, inc_y)
 }
 
@@ -373,11 +373,11 @@ pub unsafe extern "C" fn cblas_cdotc(
 /// 
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_scasum(
+pub unsafe extern "C" fn cblas_szasum(
     n: BlasInt, 
-    cx: *const Complex32, 
+    cx: *const Complex64, 
     inc_x: BlasInt 
-) -> f32 {
+) -> f64 {
     common::cz_asum(n, cx, inc_x)
 }
 
@@ -401,9 +401,9 @@ pub unsafe extern "C" fn cblas_scasum(
 /// 
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_icamax(
+pub unsafe extern "C" fn cblas_izamax(
     n: BlasInt, 
-    cx: *const Complex32, 
+    cx: *const Complex64, 
     inc_x: BlasInt
 ) -> BlasIndex {
     common::cz_iamax(n, cx, inc_x)
@@ -429,9 +429,9 @@ pub unsafe extern "C" fn cblas_icamax(
 /// 
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_icamin(
+pub unsafe extern "C" fn cblas_izamin(
     n: BlasInt, 
-    cx: *const Complex32, 
+    cx: *const Complex64, 
     inc_x: BlasInt
 ) -> BlasIndex {
     common::cz_iamin(n, cx, inc_x)
