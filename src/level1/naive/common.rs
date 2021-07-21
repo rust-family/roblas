@@ -637,24 +637,24 @@ where
         return icamin;
     }
     if inc_x == 1 {
-        let mut smax = (*cx.add(1)).re.abs() + (*cx.add(1)).im.abs();
+        let mut smin = (*cx.add(1)).re.abs() + (*cx.add(1)).im.abs();
         for i in 1_usize..n as usize {
             let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
-            if tmp < smax {
+            if tmp < smin {
                 icamin = i;
-                smax = tmp;
+                smin = tmp;
             }
         }
     }
     else {
         let mut ix = 1;
-        let mut smax = (*cx.add(1)).re.abs() + (*cx.add(1)).im.abs();
+        let mut smin = (*cx.add(1)).re.abs() + (*cx.add(1)).im.abs();
         ix = ix + inc_x;
         for i in 1_usize..n as usize {
             let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
-            if tmp < smax {
+            if tmp < smin {
                 icamin = i;
-                smax = tmp;
+                smin = tmp;
             }
             ix = ix + inc_x;
         }
