@@ -1,4 +1,4 @@
-//! The level 1 functions of blas.
+//! The level 1 functions of cblas.
 //!
 //! This is a list of functions:
 //! s-function:

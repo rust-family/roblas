@@ -252,7 +252,6 @@ pub unsafe fn sd_rot<T>(
     }
 }
 
-// TODO: 这里的索引确认没问题吗，为什么会从 1 开始
 #[inline(always)]
 pub unsafe fn sd_rotm<T>(
     n: BlasInt,
