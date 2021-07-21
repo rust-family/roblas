@@ -1,5 +1,5 @@
 use super::common;
-use crate::common::{BlasInt, Complex32};
+use crate::common::{BlasInt, Complex32, BlasIndex};
 
 /// CROTG construct givens plane rotation.
 ///
@@ -378,5 +378,61 @@ pub unsafe extern "C" fn cblas_scasum(
     cx: *const Complex32, 
     inc_x: BlasInt 
 ) -> f32 {
-    common::cz_scasum(n, cx, inc_x)
+    common::cz_asum(n, cx, inc_x)
+}
+
+/// ICAMAX finds the index of the first element having maximum $|Re(.)| + |Im(.)|$
+/// 
+/// # Description
+/// CAMAX  searches a complex vector for the first occurrence of the maximum absolute value.
+///
+/// ICAMAX determines the first index $i$ such that
+/// 
+/// $$|Real(x_i)|+ |Imag(x_i) | = MAX(|Real(x_j)| + | Imag(x_j)|): j = 1, ..., n $$
+/// 
+/// where $x_j$  is an element of a complex vector.
+/// 
+/// # Arguments
+/// * `n`(in) - Number of elements to process in the vector to be searched.  If n <= 0, these routines return 0.
+/// 
+/// * `x`(in) - Array of dimension (n-1) * |inc_x| + 1. Array x contains the vector to be searched.
+///
+/// * `inc_x`(in) - Increment between elements of x.
+/// 
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern "C" fn cblas_icamax(
+    n: BlasInt, 
+    cx: *const Complex32, 
+    inc_x: BlasInt
+) -> BlasIndex {
+    common::cz_iamax(n, cx, inc_x)
+}
+
+/// ICAMIN finds the index of the first element having minimum $|Re(.)| + |Im(.)|$
+/// 
+/// # Description
+/// CAMIN  searches a complex vector for the first occurrence of the minimum absolute value.
+///
+/// ICAMIN determines the first index $i$ such that
+/// 
+/// $$|Real(x_i)|+ |Imag(x_i) | = MIN(|Real(x_j)| + | Imag(x_j)|): j = 1, ..., n $$
+/// 
+/// where $x_j$  is an element of a complex vector.
+/// 
+/// # Arguments
+/// * `n`(in) - Number of elements to process in the vector to be searched.  If n <= 0, these routines return 0.
+/// 
+/// * `x`(in) - Array of dimension (n-1) * |inc_x| + 1. Array x contains the vector to be searched.
+///
+/// * `inc_x`(in) - Increment between elements of x.
+/// 
+#[no_mangle]
+#[inline(always)]
+pub unsafe extern "C" fn cblas_icamin(
+    n: BlasInt, 
+    cx: *const Complex32, 
+    inc_x: BlasInt
+) -> BlasIndex {
+    common::cz_iamin(n, cx, inc_x)
 }
