@@ -1,5 +1,5 @@
 mod c;
-mod common;
+mod core;
 mod d;
 mod s;
 mod z;

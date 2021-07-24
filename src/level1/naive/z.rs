@@ -1,5 +1,5 @@
-use super::common;
-use crate::common::{BlasInt, Complex64, BlasIndex};
+use super::core;
+use crate::common::{BlasIndex, BlasInt, Complex64};
 
 /// ZROTG construct givens plane rotation.
 ///
@@ -61,7 +61,7 @@ pub unsafe extern "C" fn cblas_zrotg(
     c: *mut f64,
     s: *mut Complex64,
 ) {
-    common::cz_rotg(a, b, c, s);
+    core::cz_rotg(a, b, c, s);
 }
 
 /// ZSROT performs rotation of points in the plane.
@@ -107,7 +107,7 @@ pub unsafe extern "C" fn cblas_zsrot(
     c: f64,
     s: f64,
 ) {
-    common::cz_srot(n, x, inc_x, y, inc_y, c, s);
+    core::cz_srot(n, x, inc_x, y, inc_y, c, s);
 }
 
 /// ZSWAP interchanges two complex vectors.
@@ -143,7 +143,7 @@ pub unsafe extern "C" fn cblas_zswap(
     y: *mut Complex64,
     inc_y: BlasInt,
 ) {
-    common::a_swap(n, x, inc_x, y, inc_y);
+    core::a_swap(n, x, inc_x, y, inc_y);
 }
 
 /// ZSCAL scales a complex vector by a complex constant.
@@ -174,7 +174,7 @@ pub unsafe extern "C" fn cblas_zscal(
     x: *mut Complex64,
     inc_x: BlasInt,
 ) {
-    common::cz_scal(n, p_alpha, x, inc_x);
+    core::cz_scal(n, p_alpha, x, inc_x);
 }
 
 /// ZSSCAL scales a complex vector by a real constant.
@@ -200,7 +200,7 @@ pub unsafe extern "C" fn cblas_zscal(
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_zsscal(n: BlasInt, alpha: f64, x: *mut Complex64, inc_x: BlasInt) {
-    common::cz_sscal(n, alpha, x, inc_x);
+    core::cz_sscal(n, alpha, x, inc_x);
 }
 
 /// ZCOPY copies a vector, x, to a vector, y.
@@ -231,7 +231,7 @@ pub unsafe extern "C" fn cblas_zcopy(
     y: *mut Complex64,
     inc_y: BlasInt,
 ) {
-    common::a_copy(n, x, inc_x, y, inc_y);
+    core::a_copy(n, x, inc_x, y, inc_y);
 }
 
 /// ZAXPY constant times a vector plus a vector.
@@ -273,7 +273,7 @@ pub unsafe extern "C" fn cblas_zaxpy(
     y: *mut Complex64,
     inc_y: BlasInt,
 ) {
-    common::cz_axpy(n, a, x, inc_x, y, inc_y);
+    core::cz_axpy(n, a, x, inc_x, y, inc_y);
 }
 
 /// ZDOTU forms the dot product of two complex vectors
@@ -312,7 +312,7 @@ pub unsafe extern "C" fn cblas_zdotu(
     y: *const Complex64,
     inc_y: BlasInt,
 ) -> Complex64 {
-    common::cz_dotu(n, x, inc_x, y, inc_y)
+    core::cz_dotu(n, x, inc_x, y, inc_y)
 }
 
 /// ZDOTC forms the dot product of two complex vectors
@@ -353,86 +353,82 @@ pub unsafe extern "C" fn cblas_zdotc(
     cy: *const Complex64,
     inc_y: BlasInt,
 ) -> Complex64 {
-    common::cz_dotc(n, cx, inc_x, cy, inc_y)
+    core::cz_dotc(n, cx, inc_x, cy, inc_y)
 }
 
 /// DZASUM takes the sum of the $(|Re(.)| + |Im(.)|)$'s of a complex vector and
 /// returns a single precision result.
-/// 
+///
 /// # Description
 /// This routine performs the following vector operation:
-/// 
+///
 /// $$ DZASUM \gets \sum_{i=0}^{n-1} abs(real(x(i))) + abs(aimag(x(i))) $$
-/// 
+///
 /// # Argument
 /// * `n`(in) - Number of vector elements to be summed.
-/// 
+///
 /// * `x`(in) - Array of dimension $(n-1) * abs(inc_x) + 1$. Vector that contains elements to be summed.
-/// 
+///
 /// * `inc_x`(in) - Increment between elements of x. If $inc_x = 0$, the results will be unpredictable.
-/// 
+///
 #[no_mangle]
 #[inline(always)]
-pub unsafe extern "C" fn cblas_dzasum(
-    n: BlasInt, 
-    cx: *const Complex64, 
-    inc_x: BlasInt 
-) -> f64 {
-    common::cz_asum(n, cx, inc_x)
+pub unsafe extern "C" fn cblas_dzasum(n: BlasInt, cx: *const Complex64, inc_x: BlasInt) -> f64 {
+    core::cz_asum(n, cx, inc_x)
 }
 
 /// IZAMAX finds the index of the first element having maximum $|Re(.)| + |Im(.)|$
-/// 
+///
 /// # Description
 /// ZAMAX  searches a complex vector for the first occurrence of the maximum absolute value.
 ///
 /// IZAMAX determines the first index $i$ such that
-/// 
+///
 /// $$|Real(x_i)|+ |Imag(x_i) | = MAX(|Real(x_j)| + | Imag(x_j)|): j = 1, ..., n $$
-/// 
+///
 /// where $x_j$  is an element of a complex vector.
-/// 
+///
 /// # Arguments
 /// * `n`(in) - Number of elements to process in the vector to be searched.  If n <= 0, these routines return 0.
-/// 
+///
 /// * `x`(in) - Array of dimension (n-1) * |inc_x| + 1. Array x contains the vector to be searched.
 ///
 /// * `inc_x`(in) - Increment between elements of x.
-/// 
+///
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_izamax(
-    n: BlasInt, 
-    cx: *const Complex64, 
-    inc_x: BlasInt
+    n: BlasInt,
+    cx: *const Complex64,
+    inc_x: BlasInt,
 ) -> BlasIndex {
-    common::cz_iamax(n, cx, inc_x)
+    core::cz_iamax(n, cx, inc_x)
 }
 
 /// IZAMIN finds the index of the first element having minimum $|Re(.)| + |Im(.)|$
-/// 
+///
 /// # Description
 /// ZAMIN  searches a complex vector for the first occurrence of the minimum absolute value.
 ///
 /// IZAMIN determines the first index $i$ such that
-/// 
+///
 /// $$|Real(x_i)|+ |Imag(x_i) | = MIN(|Real(x_j)| + | Imag(x_j)|): j = 1, ..., n $$
-/// 
+///
 /// where $x_j$  is an element of a complex vector.
-/// 
+///
 /// # Arguments
 /// * `n`(in) - Number of elements to process in the vector to be searched.  If n <= 0, these routines return 0.
-/// 
+///
 /// * `x`(in) - Array of dimension (n-1) * |inc_x| + 1. Array x contains the vector to be searched.
 ///
 /// * `inc_x`(in) - Increment between elements of x.
-/// 
+///
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_izamin(
-    n: BlasInt, 
-    cx: *const Complex64, 
-    inc_x: BlasInt
+    n: BlasInt,
+    cx: *const Complex64,
+    inc_x: BlasInt,
 ) -> BlasIndex {
-    common::cz_iamin(n, cx, inc_x)
+    core::cz_iamin(n, cx, inc_x)
 }

@@ -1,4 +1,4 @@
-use super::common;
+use super::core;
 use crate::common::{BlasIndex, BlasInt};
 
 /// DROTG construct givens plane rotation.
@@ -51,7 +51,7 @@ use crate::common::{BlasIndex, BlasInt};
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_drotg(a: *mut f64, b: *mut f64, c: *mut f64, s: *mut f64) {
-    common::sd_rotg(a, b, c, s);
+    core::sd_rotg(a, b, c, s);
 }
 
 /// DROTMG computes the elements of a modified Givens plane rotation matrix.
@@ -105,7 +105,7 @@ pub unsafe extern "C" fn cblas_drotmg(
     b2: f64,
     params: *mut f64,
 ) {
-    common::sd_rotmg(d1, d2, b1, b2, params);
+    core::sd_rotmg(d1, d2, b1, b2, params);
 }
 
 /// DROT performs rotation of points in the plane.
@@ -145,7 +145,7 @@ pub unsafe extern "C" fn cblas_drot(
     c: f64,
     s: f64,
 ) {
-    common::sd_rot(n, x, inc_x, y, inc_y, c, s);
+    core::sd_rot(n, x, inc_x, y, inc_y, c, s);
 }
 
 /// DROTM applies a modified Givens rotation.
@@ -191,7 +191,7 @@ pub unsafe extern "C" fn cblas_drotm(
     inc_y: BlasInt,
     param: *const f64,
 ) {
-    common::sd_rotm(n, x, inc_x, y, inc_y, param);
+    core::sd_rotm(n, x, inc_x, y, inc_y, param);
 }
 
 /// DSWAP interchanges two double precision vectors.
@@ -227,7 +227,7 @@ pub unsafe extern "C" fn cblas_dswap(
     y: *mut f64,
     inc_y: BlasInt,
 ) {
-    common::a_swap(n, x, inc_x, y, inc_y);
+    core::a_swap(n, x, inc_x, y, inc_y);
 }
 
 /// DSCAL scales a vector by a constant.
@@ -253,7 +253,7 @@ pub unsafe extern "C" fn cblas_dswap(
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_dscal(n: BlasInt, alpha: f64, x: *mut f64, inc_x: BlasInt) {
-    common::sd_scal(n, alpha, x, inc_x);
+    core::sd_scal(n, alpha, x, inc_x);
 }
 
 /// DCOPY copies a vector, x, to a vector, y.
@@ -284,7 +284,7 @@ pub unsafe extern "C" fn cblas_dcopy(
     y: *mut f64,
     inc_y: BlasInt,
 ) {
-    common::a_copy(n, x, inc_x, y, inc_y);
+    core::a_copy(n, x, inc_x, y, inc_y);
 }
 
 /// DAXPY adds a scalar multiple of a double precision vector to another double precision vector.
@@ -327,7 +327,7 @@ pub unsafe extern "C" fn cblas_daxpy(
     y: *mut f64,
     inc_y: BlasInt,
 ) {
-    common::sd_axpy(n, a, x, inc_x, y, inc_y);
+    core::sd_axpy(n, a, x, inc_x, y, inc_y);
 }
 
 /// DDOT computes a dot product of two double precision vectors (l double precision inner product).
@@ -363,7 +363,7 @@ pub unsafe extern "C" fn cblas_ddot(
     y: *const f64,
     inc_y: BlasInt,
 ) -> f64 {
-    common::sd_sdot(n, x, inc_x, y, inc_y)
+    core::sd_sdot(n, x, inc_x, y, inc_y)
 }
 
 /// DSDOT computes a dot product (inner product) of two real vectors in double precision.
@@ -463,7 +463,7 @@ pub unsafe extern "C" fn cblas_dsdot(
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_dasum(n: BlasInt, x: *const f64, inc_x: BlasInt) -> f64 {
-    common::sd_asum(n, x, inc_x)
+    core::sd_asum(n, x, inc_x)
 }
 
 /// DNRM2 computes the Euclidean norm of a vector.
@@ -487,7 +487,7 @@ pub unsafe extern "C" fn cblas_dasum(n: BlasInt, x: *const f64, inc_x: BlasInt) 
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_dnrm2(n: BlasInt, x: *const f64, inc_x: BlasInt) -> f64 {
-    common::sd_nrm2(n, x, inc_x)
+    core::sd_nrm2(n, x, inc_x)
 }
 
 /// IDAMAX finds the index of the element with the largest absolute value in a vector.
@@ -518,7 +518,7 @@ pub unsafe extern "C" fn cblas_dnrm2(n: BlasInt, x: *const f64, inc_x: BlasInt) 
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_idamax(n: BlasInt, x: *const f64, inc_x: BlasInt) -> BlasIndex {
-    common::sd_iamax(n, x, inc_x)
+    core::sd_iamax(n, x, inc_x)
 }
 
 /// IDAMIN finds the index of the element with the smallest absolute value in a vector.
@@ -550,5 +550,5 @@ pub unsafe extern "C" fn cblas_idamax(n: BlasInt, x: *const f64, inc_x: BlasInt)
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_idamin(n: BlasInt, x: *const f64, inc_x: BlasInt) -> BlasIndex {
-    common::sd_iamin(n, x, inc_x)
+    core::sd_iamin(n, x, inc_x)
 }

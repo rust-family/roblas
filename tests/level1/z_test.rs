@@ -88,6 +88,7 @@ mod z_test {
         }
         let expect = Complex64::new(0_f64, -16_f64);
         assert_eq!(result, expect);
+        panic!("From AyajiLin: MrTater, I think `zdotu` has some index problem. Check it plz!")
         // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
     }
 
@@ -106,7 +107,11 @@ mod z_test {
 
     #[test]
     fn izamax() {
-        let v1 = vec![Complex64::new(1_f64, 1_f64), Complex64::new(1_f64, -2_f64), Complex64::new(1_f64, 10_f64),];
+        let v1 = vec![
+            Complex64::new(1_f64, 1_f64),
+            Complex64::new(1_f64, -2_f64),
+            Complex64::new(1_f64, 10_f64),
+        ];
         let result;
         unsafe {
             result = cblas_izamax(3, v1.as_ptr(), 1);

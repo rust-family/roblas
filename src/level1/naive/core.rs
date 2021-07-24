@@ -585,7 +585,7 @@ where
 
 #[inline(always)]
 pub unsafe fn cz_iamax<T>(n: BlasInt, cx: *const Complex<T>, inc_x: BlasInt) -> BlasIndex
-where 
+where
     T: Clone + Signed + From<i8> + PartialOrd,
 {
     let mut icamax = 0;
@@ -604,8 +604,7 @@ where
                 smax = tmp;
             }
         }
-    }
-    else {
+    } else {
         let mut ix = 1;
         let mut smax = (*cx.add(0)).re.abs() + (*cx.add(0)).im.abs();
         ix = ix + inc_x;
@@ -623,7 +622,7 @@ where
 
 #[inline(always)]
 pub unsafe fn cz_iamin<T>(n: BlasInt, cx: *const Complex<T>, inc_x: BlasInt) -> BlasIndex
-where 
+where
     T: Clone + Signed + From<i8> + PartialOrd,
 {
     let mut icamin = 0;
@@ -643,8 +642,7 @@ where
                 smin = tmp;
             }
         }
-    }
-    else {
+    } else {
         let mut ix = 1;
         let mut smin = (*cx.add(0)).re.abs() + (*cx.add(0)).im.abs();
         ix = ix + inc_x;

@@ -1,4 +1,4 @@
-use super::common;
+use super::core;
 use crate::common::{BlasIndex, BlasInt};
 
 /// SROTG construct givens plane rotation.
@@ -51,7 +51,7 @@ use crate::common::{BlasIndex, BlasInt};
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_srotg(a: *mut f32, b: *mut f32, c: *mut f32, s: *mut f32) {
-    common::sd_rotg(a, b, c, s);
+    core::sd_rotg(a, b, c, s);
 }
 
 /// SROTMG computes the elements of a modified Givens plane rotation matrix.
@@ -105,7 +105,7 @@ pub unsafe extern "C" fn cblas_srotmg(
     b2: f32,
     params: *mut f32,
 ) {
-    common::sd_rotmg(d1, d2, b1, b2, params);
+    core::sd_rotmg(d1, d2, b1, b2, params);
 }
 
 /// SROT performs rotation of points in the plane.
@@ -145,7 +145,7 @@ pub unsafe extern "C" fn cblas_srot(
     c: f32,
     s: f32,
 ) {
-    common::sd_rot(n, x, inc_x, y, inc_y, c, s);
+    core::sd_rot(n, x, inc_x, y, inc_y, c, s);
 }
 
 /// SROTM applies a modified Givens rotation.
@@ -191,7 +191,7 @@ pub unsafe extern "C" fn cblas_srotm(
     inc_y: BlasInt,
     param: *const f32,
 ) {
-    common::sd_rotm(n, x, inc_x, y, inc_y, param);
+    core::sd_rotm(n, x, inc_x, y, inc_y, param);
 }
 
 /// SSWAP interchanges two real vectors.
@@ -227,7 +227,7 @@ pub unsafe extern "C" fn cblas_sswap(
     y: *mut f32,
     inc_y: BlasInt,
 ) {
-    common::a_swap(n, x, inc_x, y, inc_y);
+    core::a_swap(n, x, inc_x, y, inc_y);
 }
 
 /// SSCAL scales a vector by a constant.
@@ -253,7 +253,7 @@ pub unsafe extern "C" fn cblas_sswap(
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_sscal(n: BlasInt, alpha: f32, x: *mut f32, inc_x: BlasInt) {
-    common::sd_scal(n, alpha, x, inc_x);
+    core::sd_scal(n, alpha, x, inc_x);
 }
 
 /// SCOPY copies a vector, x, to a vector, y.
@@ -284,7 +284,7 @@ pub unsafe extern "C" fn cblas_scopy(
     y: *mut f32,
     inc_y: BlasInt,
 ) {
-    common::a_copy(n, x, inc_x, y, inc_y);
+    core::a_copy(n, x, inc_x, y, inc_y);
 }
 
 /// SAXPY adds a scalar multiple of a real vector to another real vector.
@@ -327,7 +327,7 @@ pub unsafe extern "C" fn cblas_saxpy(
     y: *mut f32,
     inc_y: BlasInt,
 ) {
-    common::sd_axpy(n, a, x, inc_x, y, inc_y);
+    core::sd_axpy(n, a, x, inc_x, y, inc_y);
 }
 
 /// SDOT computes a dot product of two real vectors (l real inner product).
@@ -363,7 +363,7 @@ pub unsafe extern "C" fn cblas_sdot(
     y: *const f32,
     inc_y: BlasInt,
 ) -> f32 {
-    common::sd_sdot(n, x, inc_x, y, inc_y)
+    core::sd_sdot(n, x, inc_x, y, inc_y)
 }
 
 /// SDSDOT computes a dot product (inner product) of two real vectors in double precision.
@@ -464,7 +464,7 @@ pub unsafe extern "C" fn cblas_sdsdot(
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_sasum(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f32 {
-    common::sd_asum(n, x, inc_x)
+    core::sd_asum(n, x, inc_x)
 }
 
 /// SNRM2 computes the Euclidean norm of a vector.
@@ -488,7 +488,7 @@ pub unsafe extern "C" fn cblas_sasum(n: BlasInt, x: *const f32, inc_x: BlasInt) 
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_snrm2(n: BlasInt, x: *const f32, inc_x: BlasInt) -> f32 {
-    common::sd_nrm2(n, x, inc_x)
+    core::sd_nrm2(n, x, inc_x)
 }
 
 /// ISAMAX finds the index of the element with the largest absolute value in a vector.
@@ -519,7 +519,7 @@ pub unsafe extern "C" fn cblas_snrm2(n: BlasInt, x: *const f32, inc_x: BlasInt) 
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_isamax(n: BlasInt, x: *const f32, inc_x: BlasInt) -> BlasIndex {
-    common::sd_iamax(n, x, inc_x)
+    core::sd_iamax(n, x, inc_x)
 }
 
 /// ISAMIN finds the index of the element with the smallest absolute value in a vector.
@@ -551,5 +551,5 @@ pub unsafe extern "C" fn cblas_isamax(n: BlasInt, x: *const f32, inc_x: BlasInt)
 #[no_mangle]
 #[inline(always)]
 pub unsafe extern "C" fn cblas_isamin(n: BlasInt, x: *const f32, inc_x: BlasInt) -> BlasIndex {
-    common::sd_iamin(n, x, inc_x)
+    core::sd_iamin(n, x, inc_x)
 }

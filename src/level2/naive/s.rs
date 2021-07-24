@@ -1,5 +1,5 @@
 use super::core;
-use crate::common::{CBlasOrder, CBlasTranspose, BlasInt};
+use crate::common::{BlasInt, CBlasOrder, CBlasTranspose};
 
 /// SGEMV perform one of the matrix-vector operations $y=\alpha * op(\boldsymbol{A}) * \vec{x} + \beta * \vec{y}$.
 ///
@@ -26,30 +26,60 @@ pub unsafe extern "C" fn cblas_sgemv(
     inc_x: BlasInt,
     beta: f32,
     y: *mut f32,
-    inc_y: BlasInt
+    inc_y: BlasInt,
 ) {
     let ta: char;
     if order == CBlasOrder::ColMajor {
         match trans_a {
-            CBlasTranspose::NoTrans => { ta = 'N'; }
-            CBlasTranspose::Trans => { ta = 'T'; }
-            CBlasTranspose::ConjTrans => { ta = 'C'; }
+            CBlasTranspose::NoTrans => {
+                ta = 'N';
+            }
+            CBlasTranspose::Trans => {
+                ta = 'T';
+            }
+            CBlasTranspose::ConjTrans => {
+                ta = 'C';
+            }
             _ => {
-                xerbla!(false, 2, "cblas_sgemv", "Illegal TransA setting, {:?}\n", trans_a);
+                xerbla!(
+                    false,
+                    2,
+                    "cblas_sgemv",
+                    "Illegal TransA setting, {:?}\n",
+                    trans_a
+                );
             }
         }
         core::sd_gemv(ta, m, n, alpha, a, lda, x, inc_x, beta, y, inc_y);
     } else if order == CBlasOrder::RowMajor {
         match trans_a {
-            CBlasTranspose::NoTrans => { ta = 'T'; }
-            CBlasTranspose::Trans => { ta = 'N'; }
-            CBlasTranspose::ConjTrans => { ta = 'N'; }
+            CBlasTranspose::NoTrans => {
+                ta = 'T';
+            }
+            CBlasTranspose::Trans => {
+                ta = 'N';
+            }
+            CBlasTranspose::ConjTrans => {
+                ta = 'N';
+            }
             _ => {
-                xerbla!(false, 2, "cblas_sgemv", "Illegal TransA setting, {:?}\n", trans_a);
+                xerbla!(
+                    false,
+                    2,
+                    "cblas_sgemv",
+                    "Illegal TransA setting, {:?}\n",
+                    trans_a
+                );
             }
         }
         core::sd_gemv(ta, m, n, alpha, a, lda, x, inc_x, beta, y, inc_y);
     } else {
-        xerbla!(false, 2, "cblas_sgemv", "Illegal layout setting, {:?}\n", order);
+        xerbla!(
+            false,
+            2,
+            "cblas_sgemv",
+            "Illegal layout setting, {:?}\n",
+            order
+        );
     }
 }
