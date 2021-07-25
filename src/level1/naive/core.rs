@@ -1000,14 +1000,16 @@ where
         // code for increment not equal to 1
         let mut iamax = 0;
         let mut smax = (*x).abs();
-        for i in ((inc_x as usize)..((n * inc_x) as usize)).step_by(inc_x as usize) {
-            let tmp = (*x.add(i)).abs();
+        let mut ix = inc_x as usize;
+        for i in 1..n {
+            let tmp = (*x.add(ix)).abs();
             if tmp > smax {
                 iamax = i;
                 smax = tmp;
             }
+            ix += inc_x as usize;
         }
-        iamax
+        iamax as usize
     }
 }
 
@@ -1036,13 +1038,15 @@ where
         // code for increment not equal to 1
         let mut iamin = 0;
         let mut smin = (*x).abs();
-        for i in ((inc_x as usize)..((n * inc_x) as usize)).step_by(inc_x as usize) {
-            let tmp = (*x.add(i)).abs();
+        let mut ix = inc_x as usize;
+        for i in 1..n {
+            let tmp = (*x.add(ix)).abs();
             if tmp < smin {
                 iamin = i;
                 smin = tmp;
             }
+            ix += inc_x as usize;
         }
-        iamin
+        iamin as usize
     }
 }
