@@ -502,13 +502,13 @@ where
             ctemp = ctemp + (*cx.add(i)) * (*cy.add(i));
         }
     } else {
-        let mut ix = 1;
-        let mut iy = 1;
+        let mut ix = 0;
+        let mut iy = 0;
         if inc_x < 0 {
-            ix = -inc_x * (n - 1) + 1;
+            ix = -inc_x * (n - 1);
         }
         if inc_x < 0 {
-            iy = -inc_y * (n - 1) + 1;
+            iy = -inc_y * (n - 1);
         }
         for _ in 0_usize..n as usize {
             ctemp = ctemp + (*cx.add(ix as usize)) * (*cy.add(iy as usize));
@@ -540,13 +540,13 @@ where
             ctemp = ctemp + (*cx.add(i)).conj() * (*cy.add(i));
         }
     } else {
-        let mut ix = 1;
-        let mut iy = 1;
+        let mut ix = 0;
+        let mut iy = 0;
         if inc_x < 0 {
-            ix = -inc_x * (n - 1) + 1;
+            ix = -inc_x * (n - 1);
         }
         if inc_y < 0 {
-            iy = -inc_y * (n - 1) + 1;
+            iy = -inc_y * (n - 1);
         }
         for _ in 0_usize..n as usize {
             ctemp = ctemp + (*cx.add(ix as usize)).conj() * (*cy.add(iy as usize));
@@ -604,12 +604,13 @@ where
                 smax = tmp;
             }
         }
-    } else {
-        let mut ix = 1;
+    }
+    else {
+        let mut ix = 0;
         let mut smax = (*cx.add(0)).re.abs() + (*cx.add(0)).im.abs();
         ix = ix + inc_x;
         for i in 1_usize..n as usize {
-            let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
+            let tmp = (*cx.add(ix as usize)).re.abs() + (*cx.add(ix as usize)).im.abs();
             if tmp > smax {
                 icamax = i;
                 smax = tmp;
@@ -642,12 +643,13 @@ where
                 smin = tmp;
             }
         }
-    } else {
-        let mut ix = 1;
+    }
+    else {
+        let mut ix = 0;
         let mut smin = (*cx.add(0)).re.abs() + (*cx.add(0)).im.abs();
         ix = ix + inc_x;
         for i in 1_usize..n as usize {
-            let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
+            let tmp = (*cx.add(ix as usize)).re.abs() + (*cx.add(ix as usize)).im.abs();
             if tmp < smin {
                 icamin = i;
                 smin = tmp;

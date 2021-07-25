@@ -73,23 +73,19 @@ mod z_test {
         let v1 = vec![
             Complex64::new(1_f64, 1_f64),
             Complex64::new(1_f64, -1_f64),
-            Complex64::new(-1_f64, 1_f64),
-            Complex64::new(-1_f64, -1_f64),
         ];
         let v2 = vec![
             Complex64::new(3_f64, -4_f64),
             Complex64::new(6_f64, -2_f64),
-            Complex64::new(1_f64, 2_f64),
-            Complex64::new(4_f64, 3_f64),
+
         ];
         let result;
         unsafe {
             result = cblas_zdotu(4, v1.as_ptr(), 1, v2.as_ptr(), 1);
         }
-        let expect = Complex64::new(0_f64, -16_f64);
+        let expect = Complex64::new(11_f64, -9_f64);
         assert_eq!(result, expect);
-        panic!("From AyajiLin: MrTater, I think `zdotu` has some index problem. Check it plz!")
-        // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
+        
     }
 
     #[test]
@@ -102,22 +98,17 @@ mod z_test {
         }
         let expect = Complex64::new(7_f64, -3_f64);
         assert_eq!(result, expect);
-        // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
+        
     }
 
     #[test]
     fn izamax() {
-        let v1 = vec![
-            Complex64::new(1_f64, 1_f64),
-            Complex64::new(1_f64, -2_f64),
-            Complex64::new(1_f64, 10_f64),
-        ];
+        let v1 = vec![Complex64::new(1_f64, 1_f64), Complex64::new(1_f64, -2_f64), Complex64::new(1_f64, 10_f64),Complex64::new(1_f64, 10_f64),Complex64::new(1_f64, 11_f64)];
         let result;
         unsafe {
-            result = cblas_izamax(3, v1.as_ptr(), 1);
+            result = cblas_izamax(4, v1.as_ptr(), 1);
         }
         let expect = 2 as usize;
         assert_eq!(result, expect);
-        // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
     }
 }

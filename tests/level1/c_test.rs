@@ -73,22 +73,18 @@ mod c_test {
         let v1 = vec![
             Complex32::new(1_f32, 1_f32),
             Complex32::new(1_f32, -1_f32),
-            Complex32::new(-1_f32, 1_f32),
-            Complex32::new(-1_f32, -1_f32),
         ];
         let v2 = vec![
             Complex32::new(3_f32, -4_f32),
             Complex32::new(6_f32, -2_f32),
-            Complex32::new(1_f32, 2_f32),
-            Complex32::new(4_f32, 3_f32),
         ];
         let result;
         unsafe {
-            result = cblas_cdotu(4, v1.as_ptr(), 1, v2.as_ptr(), 1);
+            result = cblas_cdotu(2, v1.as_ptr(), 1, v2.as_ptr(), 1);
         }
-        let expect = Complex32::new(0_f32, -16_f32);
+        let expect = Complex32::new(11_f32, -9_f32);
         assert_eq!(result, expect);
-        // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
+        
     }
 
     #[test]
@@ -101,6 +97,6 @@ mod c_test {
         }
         let expect = Complex32::new(7_f32, -3_f32);
         assert_eq!(result, expect);
-        // Implementation to this function unroll the for-loop with step of 5, so add this testcase here
+        
     }
 }
