@@ -73,17 +73,33 @@ mod c_test {
         let v1 = vec![
             Complex32::new(1_f32, 1_f32),
             Complex32::new(1_f32, -1_f32),
+            Complex32::new(0_f32, 0_f32),
         ];
         let v2 = vec![
             Complex32::new(3_f32, -4_f32),
             Complex32::new(6_f32, -2_f32),
+            Complex32::new(0_f32, 0_f32),
         ];
-        let result;
+        let result1;
         unsafe {
-            result = cblas_cdotu(2, v1.as_ptr(), 1, v2.as_ptr(), 1);
+            result1 = cblas_cdotu(3, v1.as_ptr(), 1, v2.as_ptr(), 1);
         }
-        let expect = Complex32::new(11_f32, -9_f32);
-        assert_eq!(result, expect);
+        let expect1 = Complex32::new(11_f32, -9_f32);
+
+        let result2;
+        unsafe {
+            result2 = cblas_cdotu(3, v1.as_ptr(), 2, v2.as_ptr(), 2);
+        }
+        let expect2 = Complex32::new(7_f32, -1_f32);
+
+        let result3;
+        unsafe {
+            result3 = cblas_cdotu(3, v1.as_ptr(), -1, v2.as_ptr(), -1);
+        }
+        let expect3 = Complex32::new(11_f32, -9_f32);
+        assert_eq!(result1, expect1);
+        assert_eq!(result2, expect2);
+        assert_eq!(result3, expect3); 
         
     }
 
@@ -91,12 +107,17 @@ mod c_test {
     fn cdotc() {
         let v1 = vec![Complex32::new(1_f32, 1_f32), Complex32::new(1_f32, -1_f32)];
         let v2 = vec![Complex32::new(3_f32, -4_f32), Complex32::new(6_f32, -2_f32)];
-        let result;
+        let result1;
         unsafe {
-            result = cblas_cdotc(2, v1.as_ptr(), 1, v2.as_ptr(), 1);
+            result1 = cblas_cdotc(2, v1.as_ptr(), 1, v2.as_ptr(), 1);
         }
-        let expect = Complex32::new(7_f32, -3_f32);
-        assert_eq!(result, expect);
-        
+        let expect1 = Complex32::new(7_f32, -3_f32);
+        let result2;
+        unsafe {
+            result2 = cblas_cdotc(2, v1.as_ptr(), 2, v2.as_ptr(), 2);
+        }
+        let expect2 = Complex32::new(-1_f32, -7_f32);
+        assert_eq!(result1, expect1);
+        assert_eq!(result2, expect2);
     }
 }
