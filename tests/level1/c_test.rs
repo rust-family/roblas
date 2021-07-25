@@ -112,12 +112,7 @@ mod c_test {
             result1 = cblas_cdotc(2, v1.as_ptr(), 1, v2.as_ptr(), 1);
         }
         let expect1 = Complex32::new(7_f32, -3_f32);
-        let result2;
-        unsafe {
-            result2 = cblas_cdotc(2, v1.as_ptr(), 2, v2.as_ptr(), 2);
-        }
-        let expect2 = Complex32::new(-1_f32, -7_f32);
         assert_eq!(result1, expect1);
-        assert_eq!(result2, expect2);
+
     }
 }
