@@ -586,7 +586,7 @@ where
 #[inline(always)]
 pub unsafe fn cz_iamax<T>(n: BlasInt, cx: *const Complex<T>, inc_x: BlasInt) -> BlasIndex
 where
-    T: Clone + Signed + From<i8> + PartialOrd,
+    T: Clone + Signed + From<i8> + PartialOrd + Copy,
 {
     let mut icamax = 0;
     if n < 1 || inc_x <= 0 {
@@ -606,16 +606,13 @@ where
         }
     }
     else {
-        let mut ix = 0;
         let mut smax = (*cx.add(0)).re.abs() + (*cx.add(0)).im.abs();
-        ix = ix + inc_x;
-        for i in 1_usize..n as usize {
-            let tmp = (*cx.add(ix as usize)).re.abs() + (*cx.add(ix as usize)).im.abs();
+        for i in ((inc_x as usize)..((n * inc_x) as usize)).step_by(inc_x as usize) {
+            let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
             if tmp > smax {
                 icamax = i;
                 smax = tmp;
             }
-            ix = ix + inc_x;
         }
     }
     icamax
@@ -645,16 +642,13 @@ where
         }
     }
     else {
-        let mut ix = 0;
         let mut smin = (*cx.add(0)).re.abs() + (*cx.add(0)).im.abs();
-        ix = ix + inc_x;
-        for i in 1_usize..n as usize {
-            let tmp = (*cx.add(ix as usize)).re.abs() + (*cx.add(ix as usize)).im.abs();
+        for i in ((inc_x as usize)..((n * inc_x) as usize)).step_by(inc_x as usize) {
+            let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
             if tmp < smin {
                 icamin = i;
                 smin = tmp;
             }
-            ix = ix + inc_x;
         }
     }
     icamin

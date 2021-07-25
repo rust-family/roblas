@@ -81,7 +81,7 @@ mod z_test {
         ];
         let result;
         unsafe {
-            result = cblas_zdotu(4, v1.as_ptr(), 1, v2.as_ptr(), 1);
+            result = cblas_zdotu(2, v1.as_ptr(), 1, v2.as_ptr(), 1);
         }
         let expect = Complex64::new(11_f64, -9_f64);
         assert_eq!(result, expect);
@@ -103,12 +103,19 @@ mod z_test {
 
     #[test]
     fn izamax() {
-        let v1 = vec![Complex64::new(1_f64, 1_f64), Complex64::new(1_f64, -2_f64), Complex64::new(1_f64, 10_f64),Complex64::new(1_f64, 10_f64),Complex64::new(1_f64, 11_f64)];
-        let result;
+        let v1 = vec![Complex64::new(1_f64, 1_f64), Complex64::new(1_f64, -2_f64), Complex64::new(1_f64, 10_f64),Complex64::new(1_f64, 15_f64),Complex64::new(1_f64, 11_f64)];
+        let result1;
         unsafe {
-            result = cblas_izamax(4, v1.as_ptr(), 1);
+            result1 = cblas_izamax(4, v1.as_ptr(), 2);
         }
-        let expect = 2 as usize;
-        assert_eq!(result, expect);
+        let expect1 = 4 as usize;
+        let v2 = vec![Complex64::new(1_f64, 1_f64), Complex64::new(1_f64, -2_f64), Complex64::new(1_f64, 10_f64),Complex64::new(1_f64, 15_f64),Complex64::new(1_f64, 11_f64)];
+        let result2;
+        unsafe {
+            result2 = cblas_izamax(4, v1.as_ptr(), 1);
+        }
+        let expect2 = 3 as usize;
+        assert_eq!(result1, expect1);
+        assert_eq!(result2, expect2);
     }
 }
