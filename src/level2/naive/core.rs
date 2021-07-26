@@ -1,5 +1,5 @@
 use crate::common::BlasInt;
-use crate::utils::{letter_same, col_major_index};
+use crate::utils::{col_major_index, letter_same};
 use num_traits::Float;
 use std::cmp::max;
 use std::ops::AddAssign;

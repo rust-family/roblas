@@ -497,7 +497,7 @@ where
     if n <= 0 {
         return ctemp;
     }
-    if inc_x == 0 && inc_y == 1 {
+    if inc_x == 1 && inc_y == 1 {
         for i in 0_usize..n as usize {
             ctemp = ctemp + (*cx.add(i)) * (*cy.add(i));
         }
@@ -510,6 +510,11 @@ where
         if inc_x < 0 {
             iy = -inc_y * (n - 1);
         }
+        // while ix <= n - 1 && iy <= n - 1 {
+        //     ctemp = ctemp + (*cx.add(ix as usize)) * (*cy.add(iy as usize));
+        //     ix = ix + inc_x;
+        //     iy = iy + inc_y;
+        // }
         for _ in 0_usize..n as usize {
             ctemp = ctemp + (*cx.add(ix as usize)) * (*cy.add(iy as usize));
             ix = ix + inc_x;
@@ -604,10 +609,9 @@ where
                 smax = tmp;
             }
         }
-    }
-    else {
+    } else {
         let mut smax = (*cx.add(0)).re.abs() + (*cx.add(0)).im.abs();
-        for i in ((inc_x as usize)..((n * inc_x) as usize)).step_by(inc_x as usize) {
+        for i in ((inc_x as usize)..(n as usize)).step_by(inc_x as usize) {
             let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
             if tmp > smax {
                 icamax = i;
@@ -640,10 +644,9 @@ where
                 smin = tmp;
             }
         }
-    }
-    else {
+    } else {
         let mut smin = (*cx.add(0)).re.abs() + (*cx.add(0)).im.abs();
-        for i in ((inc_x as usize)..((n * inc_x) as usize)).step_by(inc_x as usize) {
+        for i in ((inc_x as usize)..(n as usize)).step_by(inc_x as usize) {
             let tmp = (*cx.add(i)).re.abs() + (*cx.add(i)).im.abs();
             if tmp < smin {
                 icamin = i;

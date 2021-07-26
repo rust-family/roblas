@@ -17,15 +17,16 @@ mod s_test {
             cblas_sgemv(
                 CBlasOrder::ColMajor,
                 CBlasTranspose::NoTrans,
-                2,3,
+                2,
+                3,
                 3_f32,
                 a.as_ptr(),
-                2,
+                2, // here `lda` is 2 because of col-major array
                 x.as_ptr(),
                 1,
                 2_f32,
                 y.as_mut_ptr(),
-                1
+                1,
             )
         }
         assert_eq!(y, vec![36_f32, 74_f32])
@@ -40,22 +41,23 @@ mod s_test {
         //               [3]
         let a = vec![1_f32, 2_f32, 3_f32, 3_f32, 4_f32, 5_f32];
         let x = vec![1_f32, 2_f32, 3_f32];
-        let mut y = vec![-3_f32, -2_f32];
+        let mut y = vec![-3_f32, 0_f32, -2_f32];
         unsafe {
             cblas_sgemv(
                 CBlasOrder::RowMajor,
                 CBlasTranspose::NoTrans,
-                2,3,
+                2,
+                3,
                 3_f32,
                 a.as_ptr(),
-                2,
+                3, // here `lda` is 3 because of row-major array
                 x.as_ptr(),
                 1,
                 2_f32,
                 y.as_mut_ptr(),
-                1
+                2,
             )
         }
-        assert_eq!(y, vec![36_f32, 74_f32])
+        assert_eq!(y, vec![36_f32, 0_f32, 74_f32])
     }
 }

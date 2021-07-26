@@ -10,7 +10,28 @@ use crate::common::{BlasInt, CBlasOrder, CBlasTranspose};
 /// $$\vec{y}=\alpha * \boldsymbol{A}^T * \vec{x} + \beta * \vec{y}$$
 ///
 /// # Arguments
-/// TODO
+/// `order`(in) - indicate if matrix `a` is row-major or col-major.
+///
+/// `trans_a`(in) - whether matrix `a` would be transposed, that is, the $op(\boldsymbol{A})$
+///
+/// `m`(in) - the number of rows.
+///
+/// `n`(in) - the number of cols.
+///
+/// `alpha`(in) - constant scaling factor $\alpha$.
+///
+/// `lda`(in) - if `a` is col-major, `lda` should be the number of rows of the outer matrix;
+/// else, `lda` should be the number of cols of the outer matrix.
+///
+/// `x`(in) - vector x.
+///
+/// `inc_x`(in) - increment of vector x.
+///
+/// `beta`(in) - constant scaling factor $\beta$.
+///
+/// `y`(in, out) - vector y.
+///
+/// `inc_y`(in) - increment of vector y.
 ///
 #[no_mangle]
 #[inline(always)]
