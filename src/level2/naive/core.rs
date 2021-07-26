@@ -1,7 +1,8 @@
 use crate::common::BlasInt;
-use crate::utils::letter_same;
+use crate::utils::{letter_same, col_major_index};
 use num_traits::Float;
 use std::cmp::max;
+use std::ops::AddAssign;
 
 #[inline(always)]
 pub unsafe fn sd_gemv<T>(
@@ -17,10 +18,10 @@ pub unsafe fn sd_gemv<T>(
     y: *mut T,
     inc_y: BlasInt,
 ) where
-    T: Float + From<i8>,
+    T: Float + From<i8> + AddAssign,
 {
-    let zero = From::from(0);
-    let one = From::from(1);
+    let zero: T = From::from(0);
+    let one: T = From::from(1);
     // first, check `trans`
     let mut info = 0;
     if !letter_same(trans, 'N') && !letter_same(trans, 'T') && !letter_same(trans, 'C') {
@@ -73,6 +74,77 @@ pub unsafe fn sd_gemv<T>(
     // In this version the elements of A are accessed sequentially with one pass through A.
     //
     // First form y := beta * y
-    if beta != one {}
-    todo!()
+    if beta != one {
+        if inc_y == 1 {
+            if beta == zero {
+                for i in 0..len_y {
+                    *y.add(i) = zero;
+                }
+            } else {
+                for i in 0..len_y {
+                    *y.add(i) = beta * (*y.add(i));
+                }
+            }
+        } else {
+            if beta == zero {
+                for i in (0..(len_y * inc_y as usize)).step_by(inc_y as usize) {
+                    *y.add(i) = zero;
+                }
+            } else {
+                for i in (0..(len_y * inc_y as usize)).step_by(inc_y as usize) {
+                    *y.add(i) = beta * (*y.add(i));
+                }
+            }
+        }
+    }
+    if alpha == zero {
+        return;
+    }
+    if letter_same(trans, 'N') {
+        // Form y := alpha * A * x + y
+        let mut jx = kx;
+        if inc_y == 1 {
+            for j in 0..n as usize {
+                let temp = alpha * *x.add(jx);
+                for i in 0..m as usize {
+                    *y.add(i) += temp * *a.add(col_major_index(i, j, lda));
+                }
+                jx += inc_x as usize;
+            }
+        } else {
+            for j in 0..n as usize {
+                let temp = alpha * *x.add(jx);
+                let mut iy = ky;
+                for i in 0..m as usize {
+                    *y.add(iy) += temp * *a.add(col_major_index(i, j, lda));
+                    iy += inc_y as usize;
+                }
+                jx += inc_x as usize;
+            }
+        }
+    } else {
+        // Form y := alpha * A^T * x + y
+        let mut jy = ky;
+        if inc_x == 1 {
+            for j in 0..n as usize {
+                let mut temp = zero;
+                for i in 0..m as usize {
+                    temp += *a.add(col_major_index(i, j, lda)) * *x.add(i);
+                }
+                *y.add(jy) += alpha * temp;
+                jy += inc_y as usize;
+            }
+        } else {
+            for j in 0..n as usize {
+                let mut temp = zero;
+                let mut ix = kx;
+                for i in 0..m as usize {
+                    temp += *a.add(col_major_index(i, j, lda)) * *x.add(ix);
+                    ix += inc_x as usize;
+                }
+                *y.add(jy) += alpha * temp;
+                jy += inc_y as usize;
+            }
+        }
+    }
 }

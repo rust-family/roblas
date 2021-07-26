@@ -77,7 +77,6 @@ mod z_test {
         let v2 = vec![
             Complex64::new(3_f64, -4_f64),
             Complex64::new(6_f64, -2_f64),
-
         ];
         let result;
         unsafe {
@@ -109,7 +108,6 @@ mod z_test {
             result1 = cblas_izamax(4, v1.as_ptr(), 2);
         }
         let expect1 = 4 as usize;
-        let v2 = vec![Complex64::new(1_f64, 1_f64), Complex64::new(1_f64, -2_f64), Complex64::new(1_f64, 10_f64),Complex64::new(1_f64, 15_f64),Complex64::new(1_f64, 11_f64)];
         let result2;
         unsafe {
             result2 = cblas_izamax(4, v1.as_ptr(), 1);

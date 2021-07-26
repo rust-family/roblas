@@ -38,7 +38,7 @@ pub unsafe extern "C" fn cblas_sgemv(
                 ta = 'T';
             }
             CBlasTranspose::ConjTrans => {
-                ta = 'C';
+                ta = 'N';
             }
             _ => {
                 xerbla!(
@@ -72,7 +72,7 @@ pub unsafe extern "C" fn cblas_sgemv(
                 );
             }
         }
-        core::sd_gemv(ta, m, n, alpha, a, lda, x, inc_x, beta, y, inc_y);
+        core::sd_gemv(ta, n, m, alpha, a, lda, x, inc_x, beta, y, inc_y);
     } else {
         xerbla!(
             false,
